@@ -1,0 +1,38 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run(Debug)",
+			"type": "shell",
+			"command": "ulimit -s 1048576 && cargo run <test/tc/in",
+		},
+		{
+			"label": "Run(Release)",
+			"type": "shell",
+			"command": "ulimit -s 1048576 && /usr/bin/time -v cargo run --release <test/tc/in 2> >(awk '/User/||/System/||/Elap/||/Max/')",
+		},
+		{
+			"label": "RunAll(Debug)",
+			"type": "shell",
+			"command": "ulimit -s 1048576 && test/tc.sh 'cargo run -q'",
+		},
+		{
+			"label": "RunAll(Release)",
+			"type": "shell",
+			"command": "ulimit -s 1048576 && test/tc.sh 'cargo run --release -q'",
+		},
+		{
+			"label": "Build(Debug)",
+			"type": "shell",
+			"command": "ulimit -s 1048576 && cargo build",
+		},
+		{
+			"label": "tc_save",
+      "type": "shell",
+      "command": "node tool/tcsaver.js",
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
+		}
+	],
+}
