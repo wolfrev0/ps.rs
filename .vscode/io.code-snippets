@@ -1,0 +1,38 @@
+{
+	"read one": {
+		"scope": "rust",
+		"prefix": "__read1",
+		"body": [
+			"fn read1<T>()->T where T:FromStr, <T as FromStr>::Err: fmt::Debug{",
+			"\tlet mut s = String::new();",
+			"\tio::stdin().read_line(&mut s);",
+			"\ts.trim().parse().unwrap()",
+			"}",
+		],
+	},
+	"read vector": {
+		"scope": "rust",
+		"prefix": "__readv",
+		"body": [
+			"fn readv<T>()->Vec<T> where T:FromStr{",
+			"\tlet mut s = String::new();",
+			"\tio::stdin().read_line(&mut s).unwrap();",
+			"\ts.split_whitespace().flat_map(str::parse::<T>).collect()",
+			"}",
+		],
+	},
+	"read tuple": {
+		"scope": "rust",
+		"prefix": "__readt",
+		"body": [
+			"macro_rules! readt {",
+			"\t(\\$(\\$t: ty),+) => ({",
+			"\t\tlet mut a = String::new();",
+			"\t\tio::stdin().read_line(&mut a).unwrap();",
+			"\t\tlet mut it = a.split_whitespace();",
+			"\t\t(\\$(it.next().unwrap().parse::<\\$t>().unwrap(),)+)",
+			"\t})",
+			"}",
+		],
+	},
+}

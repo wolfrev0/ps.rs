@@ -1,0 +1,9 @@
+{
+	"square": {
+		"scope": "rust",
+		"prefix": "__sq",
+		"body": [
+			"fn sq<T: Copy + Mul<Output = T>> (x:T) -> T { x*x }"
+		],
+	},
+}
