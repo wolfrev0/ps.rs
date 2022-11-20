@@ -5,41 +5,13 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"type": "lldb",
+			"name": "Debug",
 			"request": "launch",
-			"name": "Debug executable 'rust'",
-			"cargo": {
-				"args": [
-					"build",
-					"--bin=rust",
-					"--package=rust"
-				],
-				"filter": {
-					"name": "rust",
-					"kind": "bin"
-				}
-			},
-			"args": [],
-			"cwd": "${workspaceFolder}"
+			"type": "cppdbg",
+			"program": "${workspaceFolder}/target/debug/${fileBasenameNoExtension}",
+			"args": ["<","test/tc/in"],
+			"cwd": "${workspaceFolder}",
+			"preLaunchTask": "Build(Debug)",
 		},
-		{
-			"type": "lldb",
-			"request": "launch",
-			"name": "Debug unit tests in executable 'rust'",
-			"cargo": {
-				"args": [
-					"test",
-					"--no-run",
-					"--bin=rust",
-					"--package=rust"
-				],
-				"filter": {
-					"name": "rust",
-					"kind": "bin"
-				}
-			},
-			"args": [],
-			"cwd": "${workspaceFolder}"
-		}
 	]
 }
