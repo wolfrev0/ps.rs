@@ -5,7 +5,7 @@
 		"body": [
 			"fn read1<T>()->T where T:FromStr, <T as FromStr>::Err: fmt::Debug{",
 			"\tlet mut s = String::new();",
-			"\tio::stdin().read_line(&mut s);",
+			"\tio::stdin().read_line(&mut s).unwrap();",
 			"\ts.trim().parse().unwrap()",
 			"}",
 		],

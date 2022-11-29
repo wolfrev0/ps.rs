@@ -12,6 +12,7 @@
 			"args": ["<","test/tc/in"],
 			"cwd": "${workspaceFolder}",
 			"preLaunchTask": "Build(Debug)",
+			// "externalConsole": true,
 		},
 	]
 }

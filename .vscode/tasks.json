@@ -11,11 +11,11 @@
 			"type": "shell",
 			"command": "ulimit -s 1048576 && /usr/bin/time -v cargo run --bin ${fileBasenameNoExtension} --release <test/tc/in 2> >(awk '/User/||/System/||/Elap/||/Max/')",
 		},
-		{
-			"label": "RunAll(Debug)",
-			"type": "shell",
-			"command": "ulimit -s 1048576 && test/tc.sh 'cargo run --bin ${fileBasenameNoExtension} -q'",
-		},
+		// {
+		// 	"label": "RunAll(Debug)",
+		// 	"type": "shell",
+		// 	"command": "ulimit -s 1048576 && test/tc.sh 'cargo run --bin ${fileBasenameNoExtension} -q'",
+		// },
 		{
 			"label": "RunAll(Release)",
 			"type": "shell",
