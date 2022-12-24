@@ -5,14 +5,12 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Debug",
+			"name": "Debug Rust",
 			"request": "launch",
-			"type": "cppdbg",
-			"program": "${workspaceFolder}/target/debug/${fileBasenameNoExtension}",
-			"args": ["<","test/tc/in"],
+			"type": "lldb",
+			"program": "target/debug/${fileBasenameNoExtension}",
 			"cwd": "${workspaceFolder}",
-			"preLaunchTask": "Build(Debug)",
-			// "externalConsole": true,
-		},
+			"stdio": ["test/tc/in"],
+		}
 	]
 }
