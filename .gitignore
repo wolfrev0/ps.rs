@@ -2,4 +2,3 @@ target
 node_modules
 test/tc
 package-lock.json
-src/bin/

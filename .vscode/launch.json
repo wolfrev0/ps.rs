@@ -5,12 +5,40 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Debug Rust",
-			"request": "launch",
 			"type": "lldb",
-			"program": "target/debug/${fileBasenameNoExtension}",
-			"cwd": "${workspaceFolder}",
-			"stdio": ["test/tc/in"],
+			"request": "launch",
+			"name": "Debug executable",
+			"cargo": {
+				"args": [
+					"build",
+					"--bin=${fileBasenameNoExtension}",
+					"--package=rust"
+				],
+				"filter": {
+					"kind": "bin"
+				}
+			},
+			"args": [],
+			"stdio": "test/in",
+			"cwd": "${workspaceFolder}"
+		},
+		{
+			"type": "lldb",
+			"request": "launch",
+			"name": "Debug unit tests",
+			"cargo": {
+				"args": [
+					"test",
+					"--no-run",
+					"--bin=${fileBasenameNoExtension}",
+					"--package=rust"
+				],
+				"filter": {
+					"kind": "bin"
+				}
+			},
+			"args": [],
+			"cwd": "${workspaceFolder}"
 		}
 	]
 }
