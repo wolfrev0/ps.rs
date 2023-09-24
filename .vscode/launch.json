@@ -12,7 +12,7 @@
 				"args": [
 					"build",
 					"--bin=${fileBasenameNoExtension}",
-					"--package=rust"
+					"--package=psrs"
 				],
 				"filter": {
 					"kind": "bin"
@@ -31,7 +31,7 @@
 					"test",
 					"--no-run",
 					"--bin=${fileBasenameNoExtension}",
-					"--package=rust"
+					"--package=psrs"
 				],
 				"filter": {
 					"kind": "bin"

@@ -1,5 +1,7 @@
+use psrs::io::*;
+use psrs::vex::*;
 fn solve(){
-	println!("{}",readv().iter().sum::<i32>());
+	// println!("{}",readv().iter().sum::<i32>());
 }
 
 fn main(){
@@ -9,4 +11,3 @@ fn main(){
 		solve()
 	// }
 }
-use psrs::io::*;
