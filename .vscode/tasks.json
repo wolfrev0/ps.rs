@@ -4,12 +4,12 @@
 		{
 			"label": "Run(Debug)",
 			"type": "shell",
-			"command": "ulimit -s 1048576 && cargo run --bin ${fileBasenameNoExtension} <test/in",
+			"command": "ulimit -s 1048576 && cargo equip --bin ${fileBasenameNoExtension} > submit.rs && cargo run --bin ${fileBasenameNoExtension} <test/in",
 		},
 		{
 			"label": "Run(Release)",
 			"type": "shell",
-			"command": "ulimit -s 1048576 && /usr/bin/time -v cargo run --bin ${fileBasenameNoExtension} --release <test/in 2> >(awk '/User/||/System/||/Elap/||/Max/')",
+			"command": "ulimit -s 1048576 && cargo equip --bin ${fileBasenameNoExtension} > submit.rs && /usr/bin/time -v cargo run --bin ${fileBasenameNoExtension} --release <test/in 2> >(awk '/User/||/System/||/Elap/||/Max/')",
 		},
 		{
 			"label": "RunAll(Debug)",

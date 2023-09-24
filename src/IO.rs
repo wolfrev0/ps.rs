@@ -19,7 +19,7 @@ macro_rules! readt {
 		($(__it.next().unwrap().parse::<$t>().unwrap(),)+)
 	})
 }
-pub use readt;
+// pub use readt;
 
 use std::fmt;
 use std::io;
