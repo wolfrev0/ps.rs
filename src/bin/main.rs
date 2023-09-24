@@ -9,6 +9,4 @@ fn main(){
 		solve()
 	// }
 }
-use psrs::IO::*;
-use std::io;
-use std::io::Write;
+use psrs::io::*;
