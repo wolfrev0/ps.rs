@@ -12,7 +12,7 @@ fn main(){
 }
 
 #[macro_export]
-macro_rules! readt {
+macro_rules! inputt {
 	($($t: ty),+) => ({
 		let mut __a = String::new();
 		io::stdin().read_line(&mut __a).unwrap();
