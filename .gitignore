@@ -3,14 +3,6 @@ node_modules
 test/tc
 package-lock.json
 submit.rs
-src/bin/a.rs
-src/bin/b.rs
-src/bin/c.rs
-src/bin/d.rs
-src/bin/e.rs
-src/bin/f.rs
-src/bin/g.rs
-src/bin/main.rs
 test/*.in
 test/*.ans
 test/in
