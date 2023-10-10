@@ -1,4 +1,5 @@
 fn solve(){
+	let mut out=Printer::new();
 }
 
 fn main(){
@@ -7,7 +8,6 @@ fn main(){
 	// {print!("Case #{}: ",i);solve()}
 	{solve();}
 }
-
 #[macro_export]
 macro_rules! inputt {
 	($($t: ty),+) => ({
@@ -18,3 +18,4 @@ macro_rules! inputt {
 		($(__it.next().unwrap().parse::<$t>().unwrap(),)+)
 	})
 }
+use psrs::io::Printer;
