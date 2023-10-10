@@ -22,8 +22,8 @@ impl UF{
 				swap(&mut x,&mut y);
 			}
 			self.p[y]=x;
-			self.g.push(Vec::new());
-			let gy = self.g.swap_remove(y);
+			let mut gy = Vec::new();
+			swap(&mut self.g[y], &mut gy);
 			self.g[x].extend(gy);
 			true
 		}
