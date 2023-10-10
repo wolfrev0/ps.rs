@@ -5,3 +5,4 @@ pub mod seg;
 pub mod vex;
 pub mod consts;
 pub mod uf;
+pub mod tree;
