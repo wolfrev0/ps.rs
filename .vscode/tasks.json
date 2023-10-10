@@ -4,7 +4,7 @@
 		{
 			"label": "Run(Debug)",
 			"type": "shell",
-			"command": "ulimit -s 1048576 && cargo equip --bin ${fileBasenameNoExtension} > submit.rs && cargo run --bin ${fileBasenameNoExtension} <test/in",
+			"command": "ulimit -s 1048576 && cargo equip --bin ${fileBasenameNoExtension} --minify libs > submit.rs && cargo run --bin ${fileBasenameNoExtension} <test/in",
 		},
 		{
 			"label": "Run(Release)",

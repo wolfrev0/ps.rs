@@ -5,9 +5,7 @@ pub fn input1<T>()->T where T:FromStr, <T as FromStr>::Err: fmt::Debug{
 }
 
 pub fn inputv<T>()->Vec<T> where T:FromStr{
-	let mut s=String::new();
-	io::stdin().read_line(&mut s).unwrap();
-	s.split_whitespace().flat_map(str::parse::<T>).collect()
+	inputi(&mut String::new()).collect()
 }
 
 pub fn inputi<'a,T>(s:&'a mut String)->impl Iterator<Item=T>+'a where T:FromStr+'a{
