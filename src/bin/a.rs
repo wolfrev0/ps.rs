@@ -1,5 +1,5 @@
 fn solve(){
-	let mut out=Printer::new();
+	let mut out=Printer::new(); out.flush();
 }
 
 fn main(){
