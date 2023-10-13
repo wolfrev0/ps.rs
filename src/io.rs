@@ -26,14 +26,14 @@ impl Printer{
 		self
 	}
 	pub fn flush(&mut self)->&mut Self{
-		println!("{}",self.s);
+		print!("{}",self.s);
 		self.s.clear();
 		self
 	}
 }
 impl Drop for Printer{
 	fn drop(&mut self) {
-		println!("{}",self.s);
+		self.flush();
 	}
 }
 #[macro_export]
