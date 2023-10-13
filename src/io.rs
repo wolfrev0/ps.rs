@@ -20,9 +20,8 @@ impl Printer{
 	pub fn new()->Printer{
 		Printer{s:String::new()}
 	}
-	pub fn push<T>(&mut self, x:T, delim:&str)->&mut Self where T:ToString{
+	pub fn push<T>(&mut self, x:T)->&mut Self where T:ToString{
 		self.s.push_str(&x.to_string());
-		self.s.push_str(delim);
 		self
 	}
 	pub fn flush(&mut self)->&mut Self{
