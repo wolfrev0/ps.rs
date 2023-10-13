@@ -1,42 +1,59 @@
+pub trait Monoid{
+	fn id()->Self;
+	fn f(&self, rhs:Self)->Self;
+}
+#[derive(Clone)]pub struct MAdd<T>{pub x:T}
 pub struct Seg<T>{
-	n:usize,
 	a:Vec<T>,
 }
-pub trait Monoid:Default+Copy{
-	fn op(&self, rhs:Self)->Self;
-	fn upd(&mut self, rhs:Self)->Self;
-}
-impl<T:Monoid> Seg<T>{
-	pub fn new(n:usize)->Seg<T>{Seg{n,a:vec![T::default();n*4]}}
-	pub fn q(&self,s:usize,e:usize)->T{self._q(s,e,0,self.n,1)}
-	pub fn upd(&mut self,idx:usize,val:T){self._upd(idx,val,0,self.n,1);}
-	pub fn _q(&self,s:usize,e:usize,cs:usize,ce:usize,ai:usize)->T{
-		if ce<=s || e<=cs {
-			return T::default()
-		}else if s<=cs && ce<=e {
-			self.a[ai]
-		}else{
-			let cm=(cs+ce)/2;
-			self._q(s,e,cs,cm,ai*2).op(self._q(s,e,cm,ce,ai*2+1))
+impl<T:Monoid+Clone> Seg<T>{
+	pub fn new(n:usize)->Seg<T>{Seg{a:vec![T::id();n*2]}}
+	pub fn size(&self)->usize{self.a.len()/2}
+	pub fn q(&self,mut s:usize,mut e:usize)->T{
+		let (mut rs,mut re)=(T::id(), T::id());
+		s+=self.size();
+		e+=self.size();
+		while s<e{
+			if s&1==1{rs=rs.f(self.a[s].clone()); s+=1}
+			if e&1==1{e-=1; re=self.a[e].f(re)}
+			s>>=1;
+			e>>=1;
+		}
+		rs.f(re)
+	}
+	pub fn upd(&mut self, mut idx:usize, val:T){
+		idx+=self.size();
+		self.a[idx]=val;
+		idx>>=1;
+		while idx>0{
+			self.a[idx] = self.a[idx<<1].f(self.a[idx<<1|1].clone());
+			idx>>=1;
 		}
 	}
-	pub fn _upd(&mut self,idx:usize,val:T,cs:usize,ce:usize,ai:usize)->T{
-		if ce<=idx || idx+1<=cs {
-			
-		} else if idx<=cs && ce<=idx+1 {
-			self.a[ai].upd(val);
-		} else {
-			let cm=(cs+ce)/2;
-			self.a[ai]=self._upd(idx,val,cs,cm,ai*2).op(self._upd(idx,val,cm,ce,ai*2+1));
-		}
-		self.a[ai]
-	}
 }
-impl Monoid for i64{
-	fn op(&self,rhs:Self)->Self{
-		self+rhs
-	}
-	fn upd(&mut self,rhs:Self)->Self{
-		*self+=rhs; *self
+
+impl Monoid for MAdd<i32>{
+	fn id()->Self{Self{x:0}}
+	fn f(&self,rhs:Self)->Self{Self{x:self.x+rhs.x}}
+}
+impl Monoid for MAdd<i64>{
+	fn id()->Self{Self{x:0}}
+	fn f(&self,rhs:Self)->Self{Self{x:self.x+rhs.x}}
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::seg::{Seg, MAdd};
+
+	#[test]
+	fn test_negi_0() {
+		let mut st = Seg::<MAdd::<i32>>::new(5);
+		assert_eq!(st.q(0,5).x, 0);
+		st.upd(3,MAdd::<i32>{x:7});
+		st.upd(4,MAdd::<i32>{x:3});
+		assert_eq!(st.q(2,3).x, 0);
+		assert_eq!(st.q(3,4).x, 7);
+		assert_eq!(st.q(4,5).x, 3);
+		assert_eq!(st.q(2,5).x, 10);
 	}
 }
