@@ -1,8 +1,3 @@
-pub trait Monoid{
-	fn id()->Self;
-	fn f(&self, rhs:Self)->Self;
-}
-#[derive(Clone)]pub struct MAdd<T>{pub x:T}
 pub struct Seg<T>{
 	a:Vec<T>,
 }
@@ -32,21 +27,38 @@ impl<T:Monoid+Clone> Seg<T>{
 	}
 }
 
-impl Monoid for MAdd<i32>{
-	fn id()->Self{Self{x:0}}
-	fn f(&self,rhs:Self)->Self{Self{x:self.x+rhs.x}}
-}
-impl Monoid for MAdd<i64>{
-	fn id()->Self{Self{x:0}}
-	fn f(&self,rhs:Self)->Self{Self{x:self.x+rhs.x}}
+pub trait Monoid{
+	fn id()->Self;
+	fn f(&self, rhs:Self)->Self;
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::seg::{Seg, MAdd};
-
+	use std::cmp::min;
+	use crate::seg::Seg;
+	use super::Monoid;
 	#[test]
-	fn test_negi_0() {
+	fn test_i64mul() {
+		impl Monoid for i32{
+			fn id()->Self{1}
+			fn f(&self,rhs:Self)->Self{self*rhs}
+		}
+		let mut st = Seg::<i32>::new(5);
+		assert_eq!(st.q(0,5), 1);
+		st.upd(3,7);
+		st.upd(4,3);
+		assert_eq!(st.q(2,3), 1);
+		assert_eq!(st.q(3,4), 7);
+		assert_eq!(st.q(4,5), 3);
+		assert_eq!(st.q(2,5), 21);
+	}
+	#[test]
+	fn test_struct() {
+		#[derive(Clone)]pub struct MAdd<T>{pub x:T}
+		impl Monoid for MAdd<i32>{
+			fn id()->Self{Self{x:0}}
+			fn f(&self,rhs:Self)->Self{Self{x:self.x+rhs.x}}
+		}
 		let mut st = Seg::<MAdd::<i32>>::new(5);
 		assert_eq!(st.q(0,5).x, 0);
 		st.upd(3,MAdd::<i32>{x:7});
@@ -55,5 +67,20 @@ mod tests {
 		assert_eq!(st.q(3,4).x, 7);
 		assert_eq!(st.q(4,5).x, 3);
 		assert_eq!(st.q(2,5).x, 10);
+	}
+	#[test]
+	fn test_pairmin() {
+		impl Monoid for (i32,usize){
+			fn id()->Self{(i32::MAX,usize::MAX)}
+			fn f(&self,rhs:Self)->Self{min(*self,rhs)}
+		}
+		let mut st = Seg::<(i32,usize)>::new(5);
+		assert_eq!(st.q(0,5), (i32::MAX,usize::MAX));
+		st.upd(3,(7,3));
+		st.upd(4,(3,4));
+		assert_eq!(st.q(2,3), (i32::MAX,usize::MAX));
+		assert_eq!(st.q(3,4), (7,3));
+		assert_eq!(st.q(4,5), (3,4));
+		assert_eq!(st.q(2,5), (3,4));
 	}
 }
