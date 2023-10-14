@@ -1,3 +1,5 @@
+use crate::monoid::Monoid;
+
 pub struct Seg<T>{
 	a:Vec<T>,
 }
@@ -25,11 +27,6 @@ impl<T:Monoid+Clone> Seg<T>{
 			idx>>=1;
 		}
 	}
-}
-
-pub trait Monoid{
-	fn id()->Self;
-	fn f(&self, rhs:Self)->Self;
 }
 
 #[cfg(test)]

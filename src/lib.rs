@@ -7,3 +7,4 @@ pub mod uf;
 pub mod tree;
 pub mod graph;
 pub mod helper;
+pub mod monoid;
