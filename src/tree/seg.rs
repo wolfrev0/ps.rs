@@ -1,4 +1,4 @@
-use crate::monoid::Monoid;
+use crate::math::monoid::Monoid;
 
 pub struct Seg<T>{
 	a:Vec<T>,
@@ -32,8 +32,7 @@ impl<T:Monoid+Clone> Seg<T>{
 #[cfg(test)]
 mod tests {
 	use std::cmp::min;
-	use crate::seg::Seg;
-	use super::Monoid;
+	use crate::{tree::seg::Seg, math::monoid::Monoid};
 	#[test]
 	fn test_i64mul() {
 		impl Monoid for i32{

@@ -1,11 +1,11 @@
 use std::{collections::BinaryHeap, cmp::Reverse};
 
-pub struct GraphWD{
+pub struct WD{
 	pub adj:Vec<Vec<(usize,usize)>>
 }
-impl GraphWD{
-	pub fn new(n:usize)->GraphWD{
-		GraphWD{adj:vec![Vec::new();n]}
+impl WD{
+	pub fn new(n:usize)->WD{
+		WD{adj:vec![Vec::new();n]}
 	}
 	pub fn size(&self)->usize{self.adj.len()}
 	pub fn add_edge(&mut self, from:usize, to:usize, weight:usize){
@@ -32,8 +32,8 @@ impl GraphWD{
 		}
 		dist
 	}
-	pub fn reverse(&self)->GraphWD{
-		let mut ret = GraphWD::new(self.size());
+	pub fn reverse(&self)->WD{
+		let mut ret = WD::new(self.size());
 		for x in 0..self.size(){
 			for (y,w) in self.adj[x].iter(){
 				ret.add_edge(*y, x, *w);
