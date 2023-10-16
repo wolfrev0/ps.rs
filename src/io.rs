@@ -1,51 +1,56 @@
-pub fn input1<T>()->T where T:FromStr, <T as FromStr>::Err: fmt::Debug{
-	let mut s = String::new();
-	io::stdin().read_line(&mut s).unwrap();
-	s.trim().parse().unwrap()
+pub struct IO{
+	it:SplitAsciiWhitespace<'static>,
+	strout:String,
 }
-
-pub fn inputv<T>()->Vec<T> where T:FromStr{
-	inputi(&mut String::new()).collect()
-}
-
-pub fn inputi<'a,T>(s:&'a mut String)->impl Iterator<Item=T>+'a where T:FromStr+'a{
-	io::stdin().read_line(s).unwrap();
-	s.split_whitespace().flat_map(str::parse::<T>)
-}
-
-pub struct Printer{
-	s:String
-}
-impl Printer{
-	pub fn new()->Printer{
-		Printer{s:String::new()}
+impl IO{
+	pub fn new()->IO{
+		static mut BUF:String = String::new();
+		io::stdin().read_to_string(unsafe{&mut BUF}).unwrap();
+		IO{it:unsafe{BUF.split_ascii_whitespace()},strout:String::new()}
+	}
+	pub fn pop<T>(&mut self)->T where T:FromStr, T::Err:Debug{
+		self.it.next().unwrap().parse().unwrap()
 	}
 	pub fn push<T>(&mut self, x:T)->&mut Self where T:ToString{
-		self.s.push_str(&x.to_string());
-		self
-	}
-	pub fn flush(&mut self)->&mut Self{
-		print!("{}",self.s);
-		self.s.clear();
+		self.strout.push_str(&x.to_string());
 		self
 	}
 }
-impl Drop for Printer{
+impl Drop for IO{
 	fn drop(&mut self) {
-		self.flush();
+		print!("{}",self.strout);
+		self.strout.clear();
 	}
-}
-#[macro_export]
-macro_rules! inputt {
-	($($t: ty),+) => ({
-		use std::io;
-		let mut __a = String::new();
-		io::stdin().read_line(&mut __a).unwrap();
-		let mut __it = __a.split_whitespace();
-		($(__it.next().unwrap().parse::<$t>().unwrap(),)+)
-	})
 }
 
-use std::fmt;
-use std::io;
-use std::str::FromStr;
+pub struct InteractIO<'a>{
+	it:SplitAsciiWhitespace<'static>,
+	stdout:StdoutLock<'a>,
+}
+static mut BUF:String = String::new();
+impl<'a> InteractIO<'a>{
+	pub fn new()->InteractIO<'a>{
+		unsafe{BUF = String::new()};
+		io::stdin().read_line(unsafe{&mut BUF}).unwrap();
+		InteractIO{it:unsafe{BUF.split_ascii_whitespace()},stdout:io::stdout().lock()}
+	}
+	pub fn pop<T>(&mut self)->T where T:FromStr, T::Err:Debug{
+		match self.it.next(){
+			Some(x) => x.parse().unwrap(),
+			None => {
+				unsafe{BUF = String::new()};
+				io::stdin().read_line(unsafe{&mut BUF}).unwrap();
+				self.it=unsafe{BUF.split_ascii_whitespace()};
+				self.pop()
+			}
+		}
+	}
+	pub fn push<T>(&mut self, x:T)->&mut Self where T:ToString+Display{
+		write!(self.stdout,"{}",x).unwrap();
+		self
+	}
+}
+
+use std::fmt::{Debug, Display};
+use std::io::{self,Read,Write,StdoutLock};
+use std::str::{FromStr,SplitAsciiWhitespace};
