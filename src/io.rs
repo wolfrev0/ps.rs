@@ -1,12 +1,12 @@
-pub struct IO{
+pub struct BulkIO{
 	it:SplitAsciiWhitespace<'static>,
 	strout:String,
 }
-impl IO{
-	pub fn new()->IO{
+impl BulkIO{
+	pub fn new()->BulkIO{
 		static mut BUF:String = String::new();
 		io::stdin().read_to_string(unsafe{&mut BUF}).unwrap();
-		IO{it:unsafe{BUF.split_ascii_whitespace()},strout:String::new()}
+		BulkIO{it:unsafe{BUF.split_ascii_whitespace()},strout:String::new()}
 	}
 	pub fn pop<T>(&mut self)->T where T:FromStr, T::Err:Debug{
 		self.it.next().unwrap().parse().unwrap()
@@ -16,7 +16,7 @@ impl IO{
 		self
 	}
 }
-impl Drop for IO{
+impl Drop for BulkIO{
 	fn drop(&mut self) {
 		print!("{}",self.strout);
 		self.strout.clear();
@@ -48,6 +48,9 @@ impl<'a> InteractIO<'a>{
 	pub fn push<T>(&mut self, x:T)->&mut Self where T:ToString+Display{
 		write!(self.stdout,"{}",x).unwrap();
 		self
+	}
+	pub fn flush(&mut self)->&mut Self{
+		self.stdout.flush().unwrap(); self
 	}
 }
 
