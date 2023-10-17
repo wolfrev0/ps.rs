@@ -1,12 +1,13 @@
 //static memory가 최선인 이유: Self reference를 가질 수 없다. 메모리를 옮겨다닐때 invalidate된다고 함.
 //https://users.rust-lang.org/t/having-a-struct-where-one-member-refers-to-another/51380/5
-pub struct BulkIO{//Singleton
+static mut BUF:String = String::new();
+
+pub struct BulkIO{
 	it:SplitAsciiWhitespace<'static>,
 	strout:String,
 }
 impl BulkIO{
 	pub fn new()->BulkIO{
-		static mut BUF:String = String::new();
 		io::stdin().read_to_string(unsafe{&mut BUF}).unwrap();
 		BulkIO{it:unsafe{BUF.split_ascii_whitespace()},strout:String::new()}
 	}
@@ -30,12 +31,11 @@ impl Drop for BulkIO{
 	}
 }
 
-pub struct InteractIO{//Singleton
+pub struct InteractIO{
 	it:SplitAsciiWhitespace<'static>,
 	stdin:StdinLock<'static>,
 	stdout:StdoutLock<'static>,
 }
-static mut BUF:String = String::new();
 impl InteractIO{
 	pub fn new()->InteractIO{
 		let mut stdin=io::stdin().lock();
