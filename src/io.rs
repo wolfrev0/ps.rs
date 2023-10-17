@@ -1,11 +1,11 @@
 //static memory가 최선인 이유: Self reference를 가질 수 없다. 메모리를 옮겨다닐때 invalidate된다고 함.
 //https://users.rust-lang.org/t/having-a-struct-where-one-member-refers-to-another/51380/5
-pub struct BulkIO<'a>{//Singleton
-	it:SplitAsciiWhitespace<'a>,
+pub struct BulkIO{//Singleton
+	it:SplitAsciiWhitespace<'static>,
 	strout:String,
 }
-impl<'a> BulkIO<'a>{
-	pub fn new()->BulkIO<'a>{
+impl BulkIO{
+	pub fn new()->BulkIO{
 		static mut BUF:String = String::new();
 		io::stdin().read_to_string(unsafe{&mut BUF}).unwrap();
 		BulkIO{it:unsafe{BUF.split_ascii_whitespace()},strout:String::new()}
@@ -13,7 +13,7 @@ impl<'a> BulkIO<'a>{
 	pub fn pop<T>(&mut self)->T where T:FromStr, T::Err:Debug{
 		self.it.next().unwrap().parse().unwrap()
 	}
-	pub fn popn<T>(&mut self, n:usize)->impl Iterator<Item=T>+'a where T:FromStr,T::Err:Debug{
+	pub fn popn<T>(&mut self, n:usize)->impl Iterator<Item=T> where T:FromStr,T::Err:Debug{
 		let ret = self.it.clone().take(n).map(|x|x.parse().unwrap());
 		for _ in 0..n{self.it.next();}
 		ret
@@ -23,21 +23,21 @@ impl<'a> BulkIO<'a>{
 		self
 	}
 }
-impl<'a> Drop for BulkIO<'a>{
+impl Drop for BulkIO{
 	fn drop(&mut self) {
 		print!("{}",self.strout);
 		self.strout.clear();
 	}
 }
 
-pub struct InteractIO<'a>{//Singleton
+pub struct InteractIO{//Singleton
 	it:SplitAsciiWhitespace<'static>,
-	stdin:StdinLock<'a>,
-	stdout:StdoutLock<'a>,
+	stdin:StdinLock<'static>,
+	stdout:StdoutLock<'static>,
 }
 static mut BUF:String = String::new();
-impl<'a> InteractIO<'a>{
-	pub fn new()->InteractIO<'a>{
+impl InteractIO{
+	pub fn new()->InteractIO{
 		let mut stdin=io::stdin().lock();
 		stdin.read_line(unsafe{&mut BUF}).unwrap();
 		InteractIO{
