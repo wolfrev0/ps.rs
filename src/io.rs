@@ -12,9 +12,9 @@ impl<'a> BulkIO<'a>{
 		self.it.next().unwrap().parse().unwrap()
 	}
 	pub fn popn<T>(&mut self, n:usize)->impl Iterator<Item=T>+'a where T:FromStr,T::Err:Debug{
-		let x = self.it.clone().take(n).map(|x|x.parse().unwrap());
+		let ret = self.it.clone().take(n).map(|x|x.parse().unwrap());
 		for _ in 0..n{self.it.next();}
-		x
+		ret
 	}
 	pub fn push<T>(&mut self, x:T)->&mut Self where T:ToString{
 		self.strout.push_str(&x.to_string());
