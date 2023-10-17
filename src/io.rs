@@ -1,9 +1,9 @@
-pub struct BulkIO{
-	it:SplitAsciiWhitespace<'static>,
+pub struct BulkIO<'a>{
+	it:SplitAsciiWhitespace<'a>,
 	strout:String,
 }
-impl BulkIO{
-	pub fn new()->BulkIO{
+impl<'a> BulkIO<'a>{
+	pub fn new()->BulkIO<'a>{
 		static mut BUF:String = String::new();
 		io::stdin().read_to_string(unsafe{&mut BUF}).unwrap();
 		BulkIO{it:unsafe{BUF.split_ascii_whitespace()},strout:String::new()}
@@ -11,12 +11,17 @@ impl BulkIO{
 	pub fn pop<T>(&mut self)->T where T:FromStr, T::Err:Debug{
 		self.it.next().unwrap().parse().unwrap()
 	}
+	pub fn popn<T>(&mut self, n:usize)->impl Iterator<Item=T>+'a where T:FromStr,T::Err:Debug{
+		let x = self.it.clone().take(n).map(|x|x.parse().unwrap());
+		for _ in 0..n{self.it.next();}
+		x
+	}
 	pub fn push<T>(&mut self, x:T)->&mut Self where T:ToString{
 		self.strout.push_str(&x.to_string());
 		self
 	}
 }
-impl Drop for BulkIO{
+impl<'a> Drop for BulkIO<'a>{
 	fn drop(&mut self) {
 		print!("{}",self.strout);
 		self.strout.clear();
