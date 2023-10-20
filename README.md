@@ -1,11 +1,13 @@
 # ps.rs
 Rust library for problem solving
 
-# Requirements
-Rust, VS Code
+## Interface
 
-# Note
-All library codes were written in .vscode/*.code-snippets
-
-# Getting Started
+## Getting Started
 Write your code under src/bin/*.rs
+
+## Sample Code
+## Sample Input
+## Sample Output
+## Optional Settings: Testcase Download
+## VSCode
