@@ -26,7 +26,7 @@
 			"label": "Build(Debug)",
 			"type": "shell",
 			//echo '/* ORIGINAL SOURCE CODE' > submit.rs && cat ${relativeFile} >> submit.rs && echo '*/' >> submit.rs && 
-			"command": "cargo equip --bin ${fileBasenameNoExtension} --minify libs --remove docs >> submit.rs && cargo build --bin ${fileBasenameNoExtension}",
+			"command": "rm submit.rs && cargo equip --bin ${fileBasenameNoExtension} --minify libs --remove docs >> submit.rs && cargo build --bin ${fileBasenameNoExtension}",
 		},
 		{
 			"label": "tc_save",

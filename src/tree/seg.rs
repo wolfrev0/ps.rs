@@ -35,11 +35,11 @@ mod tests {
 	use crate::{tree::seg::Seg, math::monoid::Monoid};
 	#[test]
 	fn test_i64mul() {
-		impl Monoid for i32{
+		impl Monoid for i16{
 			fn id()->Self{1}
 			fn f(&self,rhs:Self)->Self{self*rhs}
 		}
-		let mut st = Seg::<i32>::new(5);
+		let mut st = Seg::<i16>::new(5);
 		assert_eq!(st.q(0,5), 1);
 		st.upd(3,7);
 		st.upd(4,3);
@@ -51,14 +51,14 @@ mod tests {
 	#[test]
 	fn test_struct() {
 		#[derive(Clone)]pub struct MAdd<T>{pub x:T}
-		impl Monoid for MAdd<i32>{
+		impl Monoid for MAdd<i16>{
 			fn id()->Self{Self{x:0}}
 			fn f(&self,rhs:Self)->Self{Self{x:self.x+rhs.x}}
 		}
-		let mut st = Seg::<MAdd::<i32>>::new(5);
+		let mut st = Seg::<MAdd::<i16>>::new(5);
 		assert_eq!(st.q(0,5).x, 0);
-		st.upd(3,MAdd::<i32>{x:7});
-		st.upd(4,MAdd::<i32>{x:3});
+		st.upd(3,MAdd::<i16>{x:7});
+		st.upd(4,MAdd::<i16>{x:3});
 		assert_eq!(st.q(2,3).x, 0);
 		assert_eq!(st.q(3,4).x, 7);
 		assert_eq!(st.q(4,5).x, 3);
@@ -66,15 +66,15 @@ mod tests {
 	}
 	#[test]
 	fn test_pairmin() {
-		impl Monoid for (i32,usize){
-			fn id()->Self{(i32::MAX,usize::MAX)}
+		impl Monoid for (i16,usize){
+			fn id()->Self{(i16::MAX,usize::MAX)}
 			fn f(&self,rhs:Self)->Self{min(*self,rhs)}
 		}
-		let mut st = Seg::<(i32,usize)>::new(5);
-		assert_eq!(st.q(0,5), (i32::MAX,usize::MAX));
+		let mut st = Seg::<(i16,usize)>::new(5);
+		assert_eq!(st.q(0,5), (i16::MAX,usize::MAX));
 		st.upd(3,(7,3));
 		st.upd(4,(3,4));
-		assert_eq!(st.q(2,3), (i32::MAX,usize::MAX));
+		assert_eq!(st.q(2,3), (i16::MAX,usize::MAX));
 		assert_eq!(st.q(3,4), (7,3));
 		assert_eq!(st.q(4,5), (3,4));
 		assert_eq!(st.q(2,5), (3,4));
