@@ -5,11 +5,11 @@ pub struct Seg<T>{
 }
 impl<T:Monoid+Clone> Seg<T>{
 	pub fn new(n:usize)->Seg<T>{Seg{a:vec![T::id();n*2]}}
-	pub fn size(&self)->usize{self.a.len()/2}
+	pub fn len(&self)->usize{self.a.len()/2}
 	pub fn q(&self,mut s:usize,mut e:usize)->T{
 		let (mut rs,mut re)=(T::id(), T::id());
-		s+=self.size();
-		e+=self.size();
+		s+=self.len();
+		e+=self.len();
 		while s<e{
 			if s&1==1{rs=rs.f(self.a[s].clone()); s+=1}
 			if e&1==1{e-=1; re=self.a[e].f(re)}
@@ -19,7 +19,7 @@ impl<T:Monoid+Clone> Seg<T>{
 		rs.f(re)
 	}
 	pub fn upd(&mut self, mut idx:usize, val:T){
-		idx+=self.size();
+		idx+=self.len();
 		self.a[idx]=val;
 		idx>>=1;
 		while idx>0{

@@ -7,12 +7,12 @@ impl WD{
 	pub fn new(n:usize)->WD{
 		WD{adj:vec![Vec::new();n]}
 	}
-	pub fn size(&self)->usize{self.adj.len()}
+	pub fn len(&self)->usize{self.adj.len()}
 	pub fn add_edge(&mut self, from:usize, to:usize, weight:usize){
 		self.adj[from].push((to,weight));
 	}
 	pub fn dijkstra(&self, src:Vec<usize>)->Vec<usize>{
-		let mut dist=vec![usize::MAX/2;self.size()];
+		let mut dist=vec![usize::MAX/2;self.len()];
 		let mut pq = BinaryHeap::<(Reverse<usize>,usize)>::new();
 		for i in src{
 			pq.push((Reverse(0),i));
@@ -33,8 +33,8 @@ impl WD{
 		dist
 	}
 	pub fn reverse(&self)->WD{
-		let mut ret = WD::new(self.size());
-		for x in 0..self.size(){
+		let mut ret = WD::new(self.len());
+		for x in 0..self.len(){
 			for (y,w) in self.adj[x].iter(){
 				ret.add_edge(*y, x, *w);
 			}
