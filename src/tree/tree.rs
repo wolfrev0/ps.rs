@@ -25,22 +25,31 @@ pub struct TreeRooted{
 impl TreeRooted{
 	pub fn len(&self)->usize{self.p.len()}
 	pub fn new(tr:Tree, root:usize)->TreeRooted{
-		let mut ret = TreeRooted{
-			root:root,
-			p:vec![0;tr.len()],
-			ch:vec![Vec::new();tr.len()],
-			sz:vec![0;tr.len()],
-		};
-		ret.init_dfs(&tr, root, root);
-		ret
-	}
-	pub fn init_dfs(&mut self, tr:&Tree, x:usize, px:usize){
-		for y in tr.g[x].iter(){
-			if *y!=px{
-				self.p[*y]=x;
-				self.ch[x].push(*y);
-				self.init_dfs(tr, *y, x);
+		fn init_dfs(mut s:TreeRooted, tr:&Tree, x:usize, px:usize)->TreeRooted{
+			for y in tr.g[x].iter(){
+				if *y!=px{
+					s=init_dfs(s, tr, *y, x);
+					s.p[*y]=x;
+					s.ch[x].push(*y);
+					s.sz[x]+=s.sz[*y];
+				}
 			}
+			s.sz[x]+=1;
+			// make largest child subtree to be first element.
+			// It's useful When doing HLD.
+			for i in 1..s.ch[x].len(){
+				if s.sz[s.ch[x][0]] < s.sz[s.ch[x][i]]{
+					s.ch[x].swap(0,i)
+				}
+			}
+			s
 		}
+		init_dfs(
+			TreeRooted{
+				root:root,
+				p:vec![0;tr.len()],
+				ch:vec![Vec::new();tr.len()],
+				sz:vec![0;tr.len()],
+			}, &tr, root, root)
 	}
 }
