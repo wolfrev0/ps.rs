@@ -3,6 +3,31 @@ pub trait Monoid{
 	fn f(&self, rhs:Self)->Self;
 }
 
+#[derive(Clone)]
+pub struct Mmaxi64(pub i64);
+impl Monoid for Mmaxi64{
+	fn id()->Self {Mmaxi64(i64::MIN)}
+	fn f(&self, rhs:Self)->Self {Mmaxi64(self.0.max(rhs.0))}
+}
+#[derive(Clone)]
+pub struct Mmini64(pub i64);
+impl Monoid for Mmini64{
+	fn id()->Self {Mmini64(i64::MIN)}
+	fn f(&self, rhs:Self)->Self {Mmini64(self.0.max(rhs.0))}
+}
+#[derive(Clone)]
+pub struct Mmaxusize(pub usize);
+impl Monoid for Mmaxusize{
+	fn id()->Self {Mmaxusize(usize::MIN)}
+	fn f(&self, rhs:Self)->Self {Mmaxusize(self.0.max(rhs.0))}
+}
+#[derive(Clone)]
+pub struct Mminusize(pub usize);
+impl Monoid for Mminusize{
+	fn id()->Self {Mminusize(usize::MIN)}
+	fn f(&self, rhs:Self)->Self {Mminusize(self.0.max(rhs.0))}
+}
+
 // //monoid{i64,+}
 // impl Monoid for i64{
 // 	fn id()->Self {0}

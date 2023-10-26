@@ -27,6 +27,8 @@ impl<T:Monoid+Clone> Seg<T>{
 			idx>>=1;
 		}
 	}
+	pub fn prefix_partition(){}//TODO
+	pub fn suffix_partition(){}
 }
 
 #[cfg(test)]
