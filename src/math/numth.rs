@@ -1,9 +1,9 @@
-use std::ops::{Mul, Rem};
+use std::ops::Mul;
 
-use super::structs::Zero;
+use super::structs::Field;
 
 pub fn sq<T>(x:T)->T where T:Copy + Mul<Output = T>{ x*x }
-pub fn gcd<T>(x:T, y:T)->T where T:Copy+Rem<Output=T>+Zero<T>+PartialEq{
+pub fn gcd<T>(x:T, y:T)->T where T:Field{
 	if x==T::zero(){y}
 	else{gcd(y%x, x)}
 }

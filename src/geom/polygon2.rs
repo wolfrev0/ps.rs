@@ -1,6 +1,4 @@
-use std::ops::{Add, Mul, Neg, Sub, Rem, Div};
-
-use crate::math::structs::{Zero, One};
+use crate::math::structs::Field;
 
 use super::vec2::{Vec2, ccw};
 
@@ -9,9 +7,7 @@ pub struct Polygon2<T>{
 	pub a:Vec<Vec2<T>>,
 }
 impl<T> Polygon2<T>
-where T:Copy+PartialEq+Zero<T>+One<T>
-+Add<Output=T>+Mul<Output=T>+Neg<Output=T>+Sub<Output=T>
-+Div<Output=T>+Rem<Output=T>{
+where T:Field{
 	pub fn area_doubled(&self)->T{
 		let mut ret = T::zero();
 		for i in 1..self.a.len()-1{
@@ -31,9 +27,7 @@ pub struct PolygonConvex2<T>{
 	a:Vec<Vec2<T>>,
 }
 impl<T> PolygonConvex2<T>
-where T:Copy+PartialEq+Ord+Zero<T>+One<T>
-+Add<Output=T>+Mul<Output=T>+Neg<Output=T>+Sub<Output=T>
-+Div<Output=T>+Rem<Output=T>{
+where T:Field{
 	pub fn from_vertices(mut a:Vec<Vec2<T>>)->Self{
 		match a.iter().min().cloned(){
 			None => PolygonConvex2{a:Vec::new()},

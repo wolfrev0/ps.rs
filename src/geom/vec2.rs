@@ -1,11 +1,13 @@
 use std::ops::{Mul, Add, Neg, Sub};
 
+use crate::math::structs::Field;
+
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Vec2<T>{
 	pub x:T, pub y:T
 }
 
-impl<T> Vec2<T> where T:Copy+Mul<Output=T>+Add<Output=T>+Neg<Output=T>{
+impl<T> Vec2<T> where T:Field{
 	pub fn dot(&self,rhs:&Self)->T{self.x*rhs.x+self.y*rhs.y}
 	pub fn lensq(&self)->T{self.dot(self)}
 	pub fn mul(&self,scale:T)->Self{Self{x:self.x*scale, y:self.y*scale}}

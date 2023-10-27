@@ -1,4 +1,4 @@
-use crate::math::monoid::MonoidLazy;
+use crate::math::structs::MonoidLazy;
 
 struct Node<T>{
 	val:T, lz:T,
@@ -8,7 +8,7 @@ struct Node<T>{
 pub struct SegLazy<T, const XS:i64, const XE:i64>{
 	a:Vec<Node<T>>,
 }
-impl<T:MonoidLazy+PartialEq+Clone+Copy, const XS:i64, const XE:i64> SegLazy<T, XS, XE>{
+impl<T, const XS:i64, const XE:i64> SegLazy<T, XS, XE> where T:MonoidLazy+PartialEq+Clone+Copy{
 	pub fn new()->SegLazy<T,XS,XE>{
 		let mut ret = SegLazy{a:Vec::new()};
 		ret.alloc();
@@ -79,7 +79,7 @@ impl<T:MonoidLazy+PartialEq+Clone+Copy, const XS:i64, const XE:i64> SegLazy<T, X
 
 #[cfg(test)]
 mod tests {
-	use crate::{tree::segdynlazy::SegLazy, math::monoid::MonoidLazy};
+	use crate::{tree::segdynlazy::SegLazy, math::structs::MonoidLazy};
 	#[test]
 	fn test0() {
 		//Query max, Update +

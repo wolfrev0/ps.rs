@@ -1,6 +1,4 @@
-use std::ops::{Rem, Div, Sub, Mul, Neg, Add};
-
-use crate::math::{numth::gcd, structs::{Zero, One}};
+use crate::math::{numth::gcd, structs::Field};
 
 use super::vec2::Vec2;
 
@@ -15,9 +13,7 @@ pub struct Line2<T>{
 	pub a:T,pub b:T,pub c:T
 }
 impl<T> Line2<T>
-where T:Copy+PartialEq+Zero<T>+One<T>
-+Add<Output=T>+Mul<Output=T>+Neg<Output=T>+Sub<Output=T>
-+Div<Output=T>+Rem<Output=T>{
+where T:Field{
 	pub fn from_2pt(v0:Vec2::<T>, v1:Vec2::<T>)->Self{
 		Self{a:v0.y-v1.y, b:v1.x-v0.x, c:-v0.y*(v1.x-v0.x)+v0.x*(v1.y-v0.y)}
 	}
