@@ -21,11 +21,11 @@ impl<T:MonoidLazy+PartialEq+Clone+Copy, const XS:i64, const XE:i64> SegLazy<T, X
 		self.updimpl(us, ue, x, 0, XS, XE);
 	}
 	fn alloc(&mut self)->usize{
-		self.a.push(Node{val:T::idQ(), lz:T::idU(), l:0, r:0});
+		self.a.push(Node{val:T::idq(), lz:T::idu(), l:0, r:0});
 		self.a.len()-1
 	}
 	fn pushdown(&mut self, id:usize, s:i64, e:i64)->T{
-		if self.a[id].lz == T::idU(){
+		if self.a[id].lz == T::idu(){
 			self.a[id].val
 		}else{
 			let idl=self.a[id].l;
@@ -33,7 +33,7 @@ impl<T:MonoidLazy+PartialEq+Clone+Copy, const XS:i64, const XE:i64> SegLazy<T, X
 			self.a[id].val = self.a[id].val.upd(self.a[id].lz, e-s);
 			self.a[idl].lz = self.a[idl].lz.acc(self.a[id].lz);
 			self.a[idr].lz = self.a[idr].lz.acc(self.a[id].lz);
-			self.a[id].lz = T::idU();
+			self.a[id].lz = T::idu();
 			self.a[id].val
 		}
 	}
@@ -46,7 +46,7 @@ impl<T:MonoidLazy+PartialEq+Clone+Copy, const XS:i64, const XE:i64> SegLazy<T, X
 		}
 		self.pushdown(id, s, e);
 		if qe<=s || e<=qs{
-			T::idQ()
+			T::idq()
 		}else if qs<=s && e<=qe{
 			self.a[id].val
 		}else{
@@ -84,10 +84,10 @@ mod tests {
 	fn test0() {
 		//Query max, Update +
 		impl MonoidLazy for i16{
-			fn idQ()->Self{0/*i64::MIN*/}
-			fn idU()->Self{0}
+			fn idq()->Self{0/*i64::MIN*/}
+			fn idu()->Self{0}
 			fn q(&self, rhs:Self)->Self{ *self.max(&rhs) }
-			fn upd(&self, rhs:Self, cnt:i64)->Self{ *self+rhs }
+			fn upd(&self, rhs:Self, _cnt:i64)->Self{ *self+rhs }
 			fn acc(&self, rhs:Self)->Self{ *self+rhs }
 		}
 		let mut st = SegLazy::<i16,0,10>::new();

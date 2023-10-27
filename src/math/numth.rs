@@ -7,6 +7,6 @@ pub fn gcd<T>(x:T, y:T)->T where T:Copy+Rem<Output=T>+Zero<T>+PartialEq{
 	if x==T::zero(){y}
 	else{gcd(y%x, x)}
 }
-pub fn gcd_fast<T>(x:T, y:T){
+pub fn gcd_fast<T>(_x:T, _y:T){
 	//TODO: binary_gcd
 }
