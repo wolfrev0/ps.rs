@@ -38,6 +38,14 @@ impl Zero for f64 {
 		*self == 0.
 	}
 }
+impl Zero for usize {
+	fn zero() -> Self {
+		0
+	}
+	fn is_zero(&self) -> bool {
+		*self == 0
+	}
+}
 
 pub trait One {
 	fn one() -> Self;
@@ -75,6 +83,14 @@ impl One for f64 {
 		*self == 1.
 	}
 }
+impl One for usize {
+	fn one() -> Self {
+		1
+	}
+	fn is_one(&self) -> bool {
+		*self == 1
+	}
+}
 
 pub trait Inf {
 	fn inf() -> Self;
@@ -110,6 +126,14 @@ impl Inf for f64 {
 	}
 	fn is_inf(&self) -> bool {
 		*self == f64::MAX
+	}
+}
+impl Inf for usize {
+	fn inf() -> Self {
+		usize::MAX / 2
+	}
+	fn is_inf(&self) -> bool {
+		*self == usize::MAX / 2
 	}
 }
 
