@@ -1,8 +1,8 @@
 use std::ops::{Add, Mul, Neg, Sub};
 
-use crate::math::structs::Field;
+use crate::math::structs::{Field, Inf};
 
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd)]
 pub struct Vec2<T> {
 	pub x: T,
 	pub y: T,
@@ -62,6 +62,21 @@ where
 	type Output = Self;
 	fn sub(self, rhs: Self) -> Self::Output {
 		self + -rhs
+	}
+}
+impl<T> Inf for Vec2<T>
+where
+	T: Field + Inf,
+{
+	fn inf() -> Self {
+		Self {
+			x: T::inf(),
+			y: T::inf(),
+		}
+	}
+
+	fn is_inf(&self) -> bool {
+		*self == Self::inf()
 	}
 }
 

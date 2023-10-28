@@ -1,4 +1,4 @@
-// pub mod geom;
+pub mod geom;
 // pub mod graph;
 pub mod io;
 pub mod math;
