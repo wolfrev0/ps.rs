@@ -9,4 +9,8 @@
 	"editor.autoClosingBrackets": "never",
 	"editor.autoClosingOvertype": "never",
 	"editor.autoClosingQuotes": "never",
+	"[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer",
+    "editor.formatOnSave": true
+  },
 }
