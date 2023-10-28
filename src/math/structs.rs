@@ -1,5 +1,7 @@
 use std::ops::{Add, Div, Mul, Neg, Rem, Sub};
 
+use super::numth::gcd;
+
 pub trait Zero {
 	fn zero() -> Self;
 	fn is_zero(&self) -> bool;
@@ -234,20 +236,20 @@ impl Field for i64 {}
 // impl Field for f64{}
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd)]
-pub struct Float<T: Field> {
+pub struct Frac<T: Field> {
 	a: T,
 	b: T,
 }
-impl<T: Field> Group for Float<T> {}
-impl<T: Field> Ring for Float<T> {}
-impl<T: Field> Field for Float<T> {}
-impl<T: Field> Rem for Float<T> {
+impl<T: Field> Group for Frac<T> {}
+impl<T: Field> Ring for Frac<T> {}
+impl<T: Field> Field for Frac<T> {}
+impl<T: Field> Rem for Frac<T> {
 	type Output = Self;
 	fn rem(self, rhs: Self) -> Self {
 		Self::zero()
 	}
 }
-impl<T: Field> Div for Float<T> {
+impl<T: Field> Div for Frac<T> {
 	type Output = Self;
 	fn div(self, rhs: Self) -> Self {
 		Self {
@@ -256,7 +258,7 @@ impl<T: Field> Div for Float<T> {
 		}
 	}
 }
-impl<T: Field> Add for Float<T> {
+impl<T: Field> Add for Frac<T> {
 	type Output = Self;
 	fn add(self, rhs: Self) -> Self {
 		Self {
@@ -265,13 +267,13 @@ impl<T: Field> Add for Float<T> {
 		}
 	}
 }
-impl<T: Field> Sub for Float<T> {
+impl<T: Field> Sub for Frac<T> {
 	type Output = Self;
 	fn sub(self, rhs: Self) -> Self {
 		self + -rhs
 	}
 }
-impl<T: Field> Neg for Float<T> {
+impl<T: Field> Neg for Frac<T> {
 	type Output = Self;
 	fn neg(self) -> Self {
 		Self {
@@ -280,7 +282,7 @@ impl<T: Field> Neg for Float<T> {
 		}
 	}
 }
-impl<T: Field> Mul for Float<T> {
+impl<T: Field> Mul for Frac<T> {
 	type Output = Self;
 	fn mul(self, rhs: Self) -> Self {
 		Self {
@@ -289,21 +291,137 @@ impl<T: Field> Mul for Float<T> {
 		}
 	}
 }
-impl<T: Field> One for Float<T> {
-	fn one() -> Self {}
+impl<T: Field> Zero for Frac<T> {
+	fn zero() -> Self {
+		Self {
+			a: T::zero(),
+			b: T::one(),
+		}
+	}
+
+	fn is_zero(&self) -> bool {
+		self.normalized() == Self::zero()
+	}
 }
-impl<T: Field> Zero for Float<T> {}
-impl<T: Field> Float<T> {
-	pub fn normalize() {
+impl<T: Field> One for Frac<T> {
+	fn one() -> Self {
+		Self {
+			a: T::one(),
+			b: T::one(),
+		}
+	}
+	fn is_one(&self) -> bool {
+		self.normalized() == Self::one()
+	}
+}
+impl<T: Field> Frac<T> {
+	pub fn normalized(self) -> Self {
+		//NaN to 0/0
 		//div gcd
 		//make b non negative
+		if self.isnan() {
+			Self {
+				a: T::zero(),
+				b: T::zero(),
+			}
+		} else {
+			let g = gcd(self.a, self.b);
+			let mut ret = Self {
+				a: self.a / g,
+				b: self.b / g,
+			};
+			if ret.b < T::zero() {
+				ret.b = -ret.b;
+			}
+			ret
+		}
+	}
+	pub fn isnan(self) -> bool {
+		self.b.is_zero()
 	}
 }
 
-// pub struct Mod<const MOD:u32>{
-// 	pub n:u64
-// }
-// impl<const MOD:u32> Field for Mod<MOD>{}
-// impl<const MOD:u32> Mod<MOD>{
+//NOTE: MOD should prime number to be Field
+//NOTE: MOD should be smaller than u32 to not overflow
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd)]
+pub struct Mod<const MOD: usize> {
+	n: usize,
+}
+impl<const MOD: usize> From<usize> for Mod<MOD> {
+	fn from(value: usize) -> Self {
+		Self {
+			n: if value < MOD {
+				value
+			} else if value < MOD + MOD {
+				value - MOD
+			} else {
+				value % MOD
+			},
+		}
+	}
+}
+impl<const MOD: usize> Group for Mod<MOD> {}
+impl<const MOD: usize> Ring for Mod<MOD> {}
+impl<const MOD: usize> Field for Mod<MOD> {}
+impl<const MOD: usize> Rem for Mod<MOD> {
+	type Output = Self;
+	fn rem(self, rhs: Self) -> Self {
+		panic!("TODO")
+	}
+}
+impl<const MOD: usize> Div for Mod<MOD> {
+	type Output = Self;
+	fn div(self, rhs: Self) -> Self {
+		panic!("TODO")
+	}
+}
+impl<const MOD: usize> Add for Mod<MOD> {
+	type Output = Self;
+	fn add(self, rhs: Self) -> Self {
+		Self {
+			n: if self.n + rhs.n < MOD {
+				self.n + rhs.n
+			} else {
+				self.n + rhs.n - MOD
+			},
+		}
+	}
+}
+impl<const MOD: usize> Sub for Mod<MOD> {
+	type Output = Self;
+	fn sub(self, rhs: Self) -> Self {
+		self + -rhs
+	}
+}
+impl<const MOD: usize> Neg for Mod<MOD> {
+	type Output = Self;
+	fn neg(self) -> Self {
+		Self { n: MOD - self.n }
+	}
+}
+impl<const MOD: usize> Mul for Mod<MOD> {
+	type Output = Self;
+	fn mul(self, rhs: Self) -> Self {
+		Self {
+			n: self.n * rhs.n % MOD,
+		}
+	}
+}
+impl<const MOD: usize> Zero for Mod<MOD> {
+	fn zero() -> Self {
+		Self { n: 0 }
+	}
 
-// }
+	fn is_zero(&self) -> bool {
+		*self == Self::zero()
+	}
+}
+impl<const MOD: usize> One for Mod<MOD> {
+	fn one() -> Self {
+		Self { n: 1 }
+	}
+	fn is_one(&self) -> bool {
+		*self == Self::one()
+	}
+}
+impl<const MOD: usize> Mod<MOD> {}
