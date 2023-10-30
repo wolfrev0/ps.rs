@@ -59,4 +59,15 @@ impl TreeRooted {
 			root,
 		)
 	}
+	pub fn pre_order(&self) -> Vec<usize> {
+		fn dfs(ch: &Vec<Vec<usize>>, x: usize, res: &mut Vec<usize>) {
+			res.push(x);
+			for y in ch[x].iter() {
+				dfs(ch, *y, res);
+			}
+		}
+		let mut ret = Vec::new();
+		dfs(&self.ch, self.root, &mut ret);
+		ret
+	}
 }
