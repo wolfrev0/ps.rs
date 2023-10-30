@@ -6,6 +6,7 @@ pub struct WD<W: Copy + Add<Output = W> + Inf + Zero + Ord, I: Clone> {
 	//W: 거리타입, I: 엣지 부가정보
 	pub adj: Vec<Vec<(usize, W, I)>>,
 }
+
 impl<W: Copy + Add<Output = W> + Inf + Zero + Ord, I: Clone> WD<W, I> {
 	pub fn new(n: usize) -> Self {
 		Self {
@@ -14,9 +15,6 @@ impl<W: Copy + Add<Output = W> + Inf + Zero + Ord, I: Clone> WD<W, I> {
 	}
 	pub fn len(&self) -> usize {
 		self.adj.len()
-	}
-	pub fn add_edge(&mut self, from: usize, to: usize, w: W, info: I) {
-		self.adj[from].push((to, w, info));
 	}
 	pub fn dijkstra(&self, src: Vec<usize>) -> Vec<W> {
 		let mut dist = vec![W::inf(); self.len()];
@@ -39,11 +37,17 @@ impl<W: Copy + Add<Output = W> + Inf + Zero + Ord, I: Clone> WD<W, I> {
 		}
 		dist
 	}
-	pub fn reverse(&self) -> WD<W, I> {
-		let mut ret = WD::new(self.len());
+}
+
+impl<W: Copy + Add<Output = W> + Inf + Zero + Ord> WD<W, ()> {
+	pub fn add_edge(&mut self, from: usize, to: usize, w: W) {
+		self.adj[from].push((to, w, ()));
+	}
+	pub fn reverse(&self) -> WD<W, ()> {
+		let mut ret = WD::<W, ()>::new(self.len());
 		for x in 0..self.len() {
-			for (y, w, i) in self.adj[x].iter() {
-				ret.add_edge(*y, x, *w, i.clone());
+			for (y, w, _) in self.adj[x].iter() {
+				ret.add_edge(*y, x, *w);
 			}
 		}
 		ret
