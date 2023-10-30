@@ -1,8 +1,7 @@
-pub struct UD<I: Clone> {
-	pub adj: Vec<Vec<(usize, I)>>,
+pub struct AdjListUD {
+	pub adj: Vec<Vec<usize>>,
 }
-
-impl<I: Clone> UD<I> {
+impl AdjListUD {
 	pub fn new(n: usize) -> Self {
 		Self {
 			adj: vec![Vec::new(); n],
@@ -11,16 +10,13 @@ impl<I: Clone> UD<I> {
 	pub fn len(&self) -> usize {
 		self.adj.len()
 	}
-}
-
-impl UD<()> {
 	pub fn add_edge(&mut self, from: usize, to: usize) {
-		self.adj[from].push((to, ()));
+		self.adj[from].push(to);
 	}
-	pub fn reverse(&self) -> UD<()> {
-		let mut ret = UD::<()>::new(self.len());
+	pub fn reverse(&self) -> Self {
+		let mut ret = Self::new(self.len());
 		for x in 0..self.len() {
-			for (y, _) in self.adj[x].iter() {
+			for y in self.adj[x].iter() {
 				ret.add_edge(*y, x);
 			}
 		}
