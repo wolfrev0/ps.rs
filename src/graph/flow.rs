@@ -29,7 +29,11 @@ impl UD<FlowInfo> {
 			},
 		))
 	}
-	pub fn max_flow(&mut self, src: usize, snk: usize, flow_bound: usize) -> usize {
+	#[deprecated(
+		since = "0.1.0",
+		note = "please use `.dinic()` instead for better performance."
+	)]
+	pub fn ford_fulkerson(&self, src: usize, snk: usize, flow_bound: usize) -> usize {
 		fn dfs(
 			adj: &Vec<Vec<(usize, FlowInfo)>>,
 			snk: usize,
@@ -70,6 +74,8 @@ impl UD<FlowInfo> {
 		}
 		ret
 	}
+	// pub fn dinic(&mut self, src: usize, snk: usize, flow_bound: usize) -> usize {}
+	// pub fn cut(&self) -> (Vec<usize>, Vec<usize>) {}
 }
 
 impl<W: Copy + Add<Output = W> + Inf + Zero + Ord> WD<W, FlowInfo> {
