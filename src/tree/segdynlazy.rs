@@ -25,6 +25,9 @@ where
 	pub fn upd(&mut self, us: i64, ue: i64, x: T) {
 		self.updimpl(us, ue, x, 0, XS, XE);
 	}
+	pub fn updass(&mut self, idx: i64, x: T) {
+		self.updassimpl(idx, x, 0, XS, XE);
+	}
 	fn alloc(&mut self) -> usize {
 		self.a.push(Node {
 			val: T::idq(),
@@ -85,6 +88,25 @@ where
 			self.a[id].val = resl.q(resr);
 			self.a[id].val
 		}
+	}
+	fn updassimpl(&mut self, idx: i64, x: T, id: usize, s: i64, e: i64) -> T {
+		if self.a[id].l == 0 {
+			self.a[id].l = self.alloc();
+		}
+		if self.a[id].r == 0 {
+			self.a[id].r = self.alloc();
+		}
+		self.pushdown(id, s, e);
+		if idx + 1 <= s || e <= idx {
+		} else if idx <= s && e <= idx + 1 {
+			self.a[id].val = x;
+		} else {
+			let m = (s + e) / 2;
+			let resl = self.updassimpl(idx, x, self.a[id].l, s, m);
+			let resr = self.updassimpl(idx, x, self.a[id].r, m, e);
+			self.a[id].val = resl.q(resr);
+		}
+		self.a[id].val
 	}
 }
 
