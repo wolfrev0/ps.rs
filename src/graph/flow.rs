@@ -33,7 +33,7 @@ impl UD<FlowInfo> {
 		since = "0.1.0",
 		note = "please use `.dinic()` instead for better performance."
 	)]
-	pub fn ford_fulkerson(&self, src: usize, snk: usize, flow_bound: usize) -> usize {
+	pub fn ford_fulkerson(&self, src: usize, snk: usize) -> usize {
 		fn dfs(
 			adj: &Vec<Vec<(usize, FlowInfo)>>,
 			snk: usize,
@@ -64,7 +64,7 @@ impl UD<FlowInfo> {
 				&self.adj,
 				snk,
 				src,
-				flow_bound,
+				usize::MAX,
 				&mut vec![false; self.len()],
 			);
 			if flow == 0 {
@@ -75,7 +75,12 @@ impl UD<FlowInfo> {
 		ret
 	}
 	// pub fn dinic(&mut self, src: usize, snk: usize, flow_bound: usize) -> usize {}
-	// pub fn cut(&self) -> (Vec<usize>, Vec<usize>) {}
+	pub fn cut(&self, src: usize, snk: usize) -> (Vec<usize>, Vec<usize>) {
+		self.ford_fulkerson(src, snk);
+		let s = Vec::new();
+		let t = Vec::new();
+		(s, t)
+	}
 }
 
 impl<W: Copy + Add<Output = W> + Inf + Zero + Ord> WD<W, FlowInfo> {

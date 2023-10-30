@@ -1,5 +1,4 @@
 pub struct UD<I: Clone> {
-	//W: 거리타입, I: 엣지 부가정보
 	pub adj: Vec<Vec<(usize, I)>>,
 }
 
