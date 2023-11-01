@@ -448,4 +448,8 @@ impl<const MOD: usize> One for Mod<MOD> {
 		*self == Self::one()
 	}
 }
-impl<const MOD: usize> Mod<MOD> {}
+impl<const MOD: usize> Mod<MOD> {
+	pub fn get(&self) -> usize {
+		self.n
+	}
+}
