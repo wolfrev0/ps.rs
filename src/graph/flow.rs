@@ -144,8 +144,8 @@ impl Flow {
 		}
 	}
 
-	pub fn cut(&self, src: usize, snk: usize) -> (Vec<usize>, Vec<usize>) {
-		self.dinic(src, snk);
+	pub fn cut(&self, src: usize, snk: usize) -> (usize, Vec<usize>, Vec<usize>) {
+		let f = self.dinic(src, snk);
 		let mut vis = vec![false; self.len()];
 		self.cut_dfs(src, &mut vis);
 		let mut s = Vec::new();
@@ -157,7 +157,7 @@ impl Flow {
 				t.push(i)
 			}
 		}
-		(s, t)
+		(f, s, t)
 	}
 	fn cut_dfs(&self, x: usize, vis: &mut Vec<bool>) {
 		vis[x] = true;

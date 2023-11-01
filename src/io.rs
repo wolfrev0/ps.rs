@@ -33,6 +33,9 @@ impl BulkIO {
 		}
 		ret
 	}
+	pub fn popstr(&mut self) -> &str {
+		self.it.next().unwrap()
+	}
 	pub fn push<T>(&mut self, x: T) -> &mut Self
 	where
 		T: ToString,
