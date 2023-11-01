@@ -1,10 +1,10 @@
 #[derive(Clone)]
 pub struct Node<const M: usize> {
-	p: usize, //parent_link
-	c: u8,    //char from parent to here
-	s: usize, //suffix_link
-	o: usize, //output_link
-	succ: [usize; M],
+	pub p: usize, //parent_link
+	pub c: u8,    //char from parent to here
+	pub s: usize, //suffix_link
+	pub o: usize, //output_link
+	pub succ: [usize; M],
 }
 impl<const M: usize> Node<M> {
 	pub fn new(p: usize, c: u8) -> Self {
@@ -19,7 +19,7 @@ impl<const M: usize> Node<M> {
 }
 
 pub struct AhoCorasick<const M: usize> {
-	a: Vec<Node<M>>,
+	pub a: Vec<Node<M>>,
 }
 impl<const M: usize> AhoCorasick<M> {
 	pub fn new() -> Self {
