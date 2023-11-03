@@ -43,6 +43,20 @@ impl BulkIO {
 		self.strout.push_str(&x.to_string());
 		self
 	}
+
+	//helper functions
+	pub fn popusz(&mut self) -> usize {
+		self.pop::<usize>()
+	}
+	pub fn popint(&mut self) -> i64 {
+		self.pop::<i64>()
+	}
+	pub fn pushspace(&mut self) -> &mut Self {
+		self.push(' ')
+	}
+	pub fn pushendl(&mut self) -> &mut Self {
+		self.push('\n')
+	}
 }
 impl Drop for BulkIO {
 	fn drop(&mut self) {
