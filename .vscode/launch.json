@@ -20,7 +20,8 @@
 			},
 			"args": [],
 			"stdio": "test/in",
-			"cwd": "${workspaceFolder}"
+			"cwd": "${workspaceFolder}",
+			// "preLaunchTask": "Create submit.rs"
 		},
 		{
 			"type": "lldb",
