@@ -1,3 +1,5 @@
+use crate::tree::uf::UF;
+
 pub struct AdjListUD {
 	pub adj: Vec<Vec<usize>>,
 }
@@ -21,5 +23,20 @@ impl AdjListUD {
 			}
 		}
 		ret
+	}
+	pub fn is_bipartite(&self) -> bool {
+		let mut uf = UF::new(self.len() * 2);
+		for x in 0..self.len() {
+			for y in self.adj[x].iter() {
+				uf.union(x, y + self.len());
+				uf.union(x + self.len(), *y);
+			}
+		}
+		for i in 0..self.len() {
+			if uf.root(i) == uf.root(i + self.len()) {
+				return false;
+			}
+		}
+		return true;
 	}
 }
