@@ -35,4 +35,7 @@ impl UF {
 			true
 		}
 	}
+	pub fn gsz(&self, x: usize) -> usize {
+		self.g[x].len()
+	}
 }
