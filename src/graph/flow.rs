@@ -1,4 +1,4 @@
-use std::{cell::Cell, collections::VecDeque, ops::Add};
+use std::{collections::VecDeque, ops::Add};
 
 use crate::math::structs::{Inf, Zero};
 
@@ -82,7 +82,7 @@ impl Flow {
 	pub fn dinic(&mut self, src: usize, snk: usize) -> usize {
 		let mut ret = 0;
 		loop {
-			let dist = self.dinic_bfs(src, snk);
+			let dist = self.dinic_bfs(src);
 			let mut idx_base = vec![0; self.len()];
 			let mut flow = 0;
 			loop {
@@ -99,7 +99,7 @@ impl Flow {
 		}
 		ret
 	}
-	fn dinic_bfs(&self, src: usize, snk: usize) -> Vec<usize> {
+	fn dinic_bfs(&self, src: usize) -> Vec<usize> {
 		let mut dist = vec![usize::MAX / 2; self.len()];
 		let mut q = VecDeque::new();
 		dist[src] = 0;
@@ -189,7 +189,7 @@ impl<W: Copy + Add<Output = W> + Inf + Zero + Ord> WD<W, FlowInfo> {
 			},
 		))
 	}
-	pub fn min_cost_flow(&mut self, src: usize, snk: usize, flow_bound: usize) -> usize {
-		panic!("TODO");
-	}
+	// pub fn min_cost_flow(&mut self, src: usize, snk: usize) -> usize {
+	// 	panic!("TODO");
+	// }
 }
