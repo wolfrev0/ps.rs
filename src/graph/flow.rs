@@ -1,13 +1,13 @@
-use std::{cell::Cell, clone, collections::VecDeque, ops::Add};
+use std::{cell::Cell, collections::VecDeque, ops::Add};
 
 use crate::math::structs::{Inf, Zero};
 
-use super::{ud::AdjListUD, wd::WD};
+use super::wd::WD;
 
 #[derive(Clone)]
 pub struct FlowInfo {
-	pub resi: usize,      //residual index
-	pub cap: Cell<usize>, //capacity
+	pub resi: usize, //residual index
+	pub cap: usize,  //capacity
 }
 pub struct Flow {
 	pub adj: Vec<Vec<(usize, FlowInfo)>>,
@@ -28,14 +28,14 @@ impl Flow {
 			to,
 			FlowInfo {
 				resi: resi_from,
-				cap: Cell::new(cap),
+				cap: cap,
 			},
 		));
 		self.adj[to].push((
 			from,
 			FlowInfo {
 				resi: resi_to,
-				cap: Cell::new(0),
+				cap: 0,
 			},
 		))
 	}
@@ -43,7 +43,7 @@ impl Flow {
 		since = "0.1.0",
 		note = "please use `.dinic()` instead for better performance."
 	)]
-	pub fn ford_fulkerson(&self, src: usize, snk: usize) -> usize {
+	pub fn ford_fulkerson(&mut self, src: usize, snk: usize) -> usize {
 		let mut ret = 0;
 		loop {
 			let flow = self.ford_fulkerson_dfs(snk, src, usize::MAX, &mut vec![false; self.len()]);
@@ -55,7 +55,7 @@ impl Flow {
 		ret
 	}
 	fn ford_fulkerson_dfs(
-		self: &Self,
+		&mut self,
 		snk: usize,
 		x: usize,
 		flow: usize,
@@ -65,13 +65,13 @@ impl Flow {
 			return flow;
 		}
 		vis[x] = true;
-		for (y, FlowInfo { resi, cap }) in self.adj[x].iter() {
-			if !vis[*y] && cap.get() > 0 {
-				let flow_cur = self.ford_fulkerson_dfs(snk, *y, flow.min(cap.get()), vis);
+		for i in 0..self.adj[x].len() {
+			let (y, FlowInfo { resi, cap }) = self.adj[x][i];
+			if !vis[y] && cap > 0 {
+				let flow_cur = self.ford_fulkerson_dfs(snk, y, flow.min(cap), vis);
 				if flow_cur > 0 {
-					cap.set(cap.get() - flow_cur);
-					let cap_resi = &self.adj[*y][*resi].1.cap;
-					cap_resi.set(cap_resi.get() + flow_cur);
+					self.adj[x][i].1.cap -= flow_cur;
+					self.adj[y][resi].1.cap += flow_cur;
 					return flow_cur;
 				}
 			}
@@ -79,7 +79,7 @@ impl Flow {
 		0
 	}
 
-	pub fn dinic(&self, src: usize, snk: usize) -> usize {
+	pub fn dinic(&mut self, src: usize, snk: usize) -> usize {
 		let mut ret = 0;
 		loop {
 			let dist = self.dinic_bfs(src, snk);
@@ -107,7 +107,7 @@ impl Flow {
 		while q.len() > 0 {
 			let x = q.pop_front().unwrap();
 			for (y, FlowInfo { resi: _, cap }) in self.adj[x].iter() {
-				if cap.get() > 0 && dist[*y] > dist[x] + 1 {
+				if *cap > 0 && dist[*y] > dist[x] + 1 {
 					dist[*y] = dist[x] + 1;
 					q.push_back(*y);
 				}
@@ -117,7 +117,7 @@ impl Flow {
 	}
 	//snk에서 역방향으로 src에 도달가능한 간선만 사용하면 더 빨라질수도 있다고 함
 	fn dinic_dfs(
-		&self,
+		&mut self,
 		snk: usize,
 		dist: &Vec<usize>,
 		x: usize,
@@ -128,13 +128,12 @@ impl Flow {
 			flow
 		} else {
 			while idx_base[x] < self.adj[x].len() {
-				let (y, FlowInfo { resi, cap }) = &self.adj[x][idx_base[x]];
-				if dist[*y] == dist[x] + 1 && cap.get() > 0 {
-					let flow_cur = self.dinic_dfs(snk, dist, *y, idx_base, flow.min(cap.get()));
+				let (y, FlowInfo { resi, cap }) = self.adj[x][idx_base[x]];
+				if dist[y] == dist[x] + 1 && cap > 0 {
+					let flow_cur = self.dinic_dfs(snk, dist, y, idx_base, flow.min(cap));
 					if flow_cur > 0 {
-						cap.set(cap.get() - flow_cur);
-						let cap_resi = &self.adj[*y][*resi].1.cap;
-						cap_resi.set(cap_resi.get() + flow_cur);
+						self.adj[x][idx_base[x]].1.cap -= flow_cur;
+						self.adj[y][resi].1.cap += flow_cur;
 						return flow_cur;
 					}
 				}
@@ -144,7 +143,7 @@ impl Flow {
 		}
 	}
 
-	pub fn cut(&self, src: usize, snk: usize) -> (usize, Vec<usize>, Vec<usize>) {
+	pub fn cut(&mut self, src: usize, snk: usize) -> (usize, Vec<usize>, Vec<usize>) {
 		let f = self.dinic(src, snk);
 		let mut vis = vec![false; self.len()];
 		self.cut_dfs(src, &mut vis);
@@ -162,7 +161,7 @@ impl Flow {
 	fn cut_dfs(&self, x: usize, vis: &mut Vec<bool>) {
 		vis[x] = true;
 		for (y, FlowInfo { resi: _, cap }) in self.adj[x].iter() {
-			if !vis[*y] && cap.get() > 0 {
+			if !vis[*y] && *cap > 0 {
 				self.cut_dfs(*y, vis);
 			}
 		}
@@ -178,7 +177,7 @@ impl<W: Copy + Add<Output = W> + Inf + Zero + Ord> WD<W, FlowInfo> {
 			cost,
 			FlowInfo {
 				resi: resi_from,
-				cap: Cell::new(cap),
+				cap: cap,
 			},
 		));
 		self.adj[to].push((
@@ -186,7 +185,7 @@ impl<W: Copy + Add<Output = W> + Inf + Zero + Ord> WD<W, FlowInfo> {
 			cost,
 			FlowInfo {
 				resi: resi_to,
-				cap: Cell::new(0),
+				cap: 0,
 			},
 		))
 	}
