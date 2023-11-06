@@ -1,6 +1,6 @@
 use std::{cmp::Reverse, collections::BinaryHeap, ops::Add};
 
-use crate::math::structs::{Inf, Zero};
+use crate::math::structs::{inf::Inf, zero::Zero};
 
 pub struct WD<W: Copy + Add<Output = W> + Inf + Zero + Ord, I: Clone> {
 	//W: 거리타입, I: 엣지 부가정보

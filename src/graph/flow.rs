@@ -1,6 +1,6 @@
 use std::{collections::VecDeque, ops::Add};
 
-use crate::math::structs::{Inf, Zero};
+use crate::math::structs::{inf::Inf, zero::Zero};
 
 use super::wd::WD;
 

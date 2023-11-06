@@ -1,4 +1,4 @@
-use crate::math::structs::MonoidLazy;
+use crate::math::structs::monoid::MonoidLazy;
 
 struct Node<T> {
 	val: T,
@@ -112,7 +112,8 @@ where
 
 #[cfg(test)]
 mod tests {
-	use crate::{math::structs::MonoidLazy, tree::segdynlazy::SegLazy};
+	use crate::{math::structs::monoid::MonoidLazy, tree::segdynlazy::SegLazy};
+
 	#[test]
 	fn test0() {
 		//Query max, Update +

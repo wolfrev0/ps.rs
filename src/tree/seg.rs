@@ -1,4 +1,4 @@
-use crate::math::structs::Monoid;
+use crate::math::structs::monoid::Monoid;
 
 pub struct Seg<T> {
 	a: Vec<T>,
@@ -45,8 +45,9 @@ impl<T: Monoid + Clone> Seg<T> {
 
 #[cfg(test)]
 mod tests {
-	use crate::{math::structs::Monoid, tree::seg::Seg};
 	use std::cmp::min;
+
+	use crate::{math::structs::monoid::Monoid, tree::seg::Seg};
 	#[test]
 	fn test_i64mul() {
 		impl Monoid for i16 {

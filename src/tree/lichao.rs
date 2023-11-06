@@ -1,6 +1,6 @@
 use crate::{
 	geom::line2::Line2,
-	math::structs::{Field, Inf, One, Zero},
+	math::structs::{field::Field, inf::Inf, one::One, zero::Zero},
 };
 
 pub trait LichaoFuncType {

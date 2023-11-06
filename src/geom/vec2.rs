@@ -1,6 +1,6 @@
 use std::ops::{Add, Mul, Neg, Sub};
 
-use crate::math::structs::{Field, Inf};
+use crate::math::structs::{field::Field, inf::Inf};
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd)]
 pub struct Vec2<T> {

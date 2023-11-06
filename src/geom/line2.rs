@@ -1,4 +1,4 @@
-use crate::math::{numth::gcd, structs::Field};
+use crate::math::{numth::gcd, structs::field::Field};
 
 use super::vec2::Vec2;
 

@@ -45,10 +45,10 @@ impl BulkIO {
 	}
 
 	//helper functions
-	pub fn popusz(&mut self) -> usize {
+	pub fn popu(&mut self) -> usize {
 		self.pop::<usize>()
 	}
-	pub fn popint(&mut self) -> i64 {
+	pub fn popi(&mut self) -> i64 {
 		self.pop::<i64>()
 	}
 	pub fn pushspace(&mut self) -> &mut Self {

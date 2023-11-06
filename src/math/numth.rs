@@ -1,6 +1,6 @@
 use std::ops::Mul;
 
-use super::structs::Field;
+use super::structs::field::Field;
 
 pub fn sq<T>(x: T) -> T
 where

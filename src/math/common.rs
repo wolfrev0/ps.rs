@@ -1,6 +1,6 @@
 use std::ops::Mul;
 
-use super::structs::One;
+use super::structs::one::One;
 
 pub fn pow<T: Clone + Mul<T, Output = T> + One>(x: T, y: usize) -> T {
 	if y == 0 {

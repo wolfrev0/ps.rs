@@ -1,5 +1,6 @@
-use crate::math::structs::{Field, Inf};
 use std::cmp::Ordering::*;
+
+use crate::math::structs::{field::Field, inf::Inf};
 
 use super::vec2::{ccw, Vec2};
 

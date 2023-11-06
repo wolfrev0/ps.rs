@@ -1,6 +1,6 @@
 use std::ops::Mul;
 
-use super::structs::{Field, One};
+use super::{field::Field, one::One};
 
 #[derive(Clone, PartialEq, Eq)]
 pub struct Matrix<T: Field, const R: usize, const C: usize> {
