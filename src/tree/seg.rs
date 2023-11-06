@@ -47,7 +47,21 @@ impl<T: Monoid + Clone> Seg<T> {
 mod tests {
 	use std::cmp::min;
 
-	use crate::{math::structs::monoid::Monoid, tree::seg::Seg};
+	use crate::{
+		math::structs::monoid::{MonAdd, Monoid},
+		tree::seg::Seg,
+	};
+	#[test]
+	fn test_generic() {
+		let mut st = Seg::<MonAdd<i64>>::new(5);
+		assert_eq!(st.q(0, 5).0, 0);
+		st.upd(3, MonAdd(7));
+		st.upd(4, MonAdd(3));
+		assert_eq!(st.q(2, 3).0, 0);
+		assert_eq!(st.q(3, 4).0, 7);
+		assert_eq!(st.q(4, 5).0, 3);
+		assert_eq!(st.q(2, 5).0, 10);
+	}
 	#[test]
 	fn test_i64mul() {
 		impl Monoid for i16 {

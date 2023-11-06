@@ -1,79 +1,63 @@
-//TODO: Monoid refactoring
-//pub trait Monoid: Zero+Add<Output=Self>로 하면 Group으로 확장 가능할듯?
+use std::ops::{Add, BitXor, Neg};
+
+use super::{inf::Inf, zero::Zero};
+
 pub trait Monoid {
 	fn id() -> Self;
 	fn f(&self, rhs: Self) -> Self;
 }
 #[derive(Clone)]
-pub struct Mmaxi64(pub i64);
-impl Monoid for Mmaxi64 {
+pub struct MonAdd<T>(pub T);
+impl<T> Monoid for MonAdd<T>
+where
+	T: Ord + Copy + Zero + Add<Output = T>,
+{
 	fn id() -> Self {
-		Mmaxi64(i64::MIN)
+		Self(T::zero())
 	}
 	fn f(&self, rhs: Self) -> Self {
-		Mmaxi64(self.0.max(rhs.0))
+		Self(self.0 + rhs.0)
 	}
 }
 #[derive(Clone)]
-pub struct Mmini64(pub i64);
-impl Monoid for Mmini64 {
+pub struct MonMax<T>(pub T);
+impl<T> Monoid for MonMax<T>
+where
+	T: Ord + Copy + Inf + Neg<Output = T>,
+{
 	fn id() -> Self {
-		Mmini64(i64::MIN)
+		Self(-T::inf())
 	}
 	fn f(&self, rhs: Self) -> Self {
-		Mmini64(self.0.max(rhs.0))
+		Self(self.0.max(rhs.0))
 	}
 }
 #[derive(Clone)]
-pub struct Mmaxusize(pub usize);
-impl Monoid for Mmaxusize {
+pub struct MonMin<T>(pub T);
+impl<T> Monoid for MonMin<T>
+where
+	T: Ord + Copy + Inf,
+{
 	fn id() -> Self {
-		Mmaxusize(usize::MIN)
+		Self(T::inf())
 	}
 	fn f(&self, rhs: Self) -> Self {
-		Mmaxusize(self.0.max(rhs.0))
+		Self(self.0.min(rhs.0))
 	}
 }
 #[derive(Clone)]
-pub struct Mminusize(pub usize);
-impl Monoid for Mminusize {
+pub struct MonXor<T>(pub T);
+impl<T> Monoid for MonXor<T>
+where
+	T: Ord + Copy + Zero + BitXor<Output = T>,
+{
 	fn id() -> Self {
-		Mminusize(usize::MIN)
+		Self(T::zero())
 	}
 	fn f(&self, rhs: Self) -> Self {
-		Mminusize(self.0.max(rhs.0))
+		Self(self.0 ^ rhs.0)
 	}
 }
-
-// //monoid{i64,+}
-// impl Monoid for i64{
-// 	fn id()->Self {0}
-// 	fn f(&self, rhs:Self)->Self {*self + rhs}
-// }
-
-// //monoid{i64,min}
-// impl Monoid for i64{
-// 	fn id()->Self {i64::MAX}
-// 	fn f(&self, rhs:Self)->Self {min(*self,rhs)}
-// }
-
-// //monoid{i64,max}
-// impl Monoid for i64{
-// 	fn id()->Self {i64::MIN}
-// 	fn f(&self, rhs:Self)->Self {max(*self,rhs)}
-// }
-
-// //monoid{(val,idx),min}
-// impl Monoid for (usize,usize){
-// 	fn id()->Self{(usize::MAX,usize::MAX)}
-// 	fn f(&self,rhs:Self)->Self{min(*self,rhs)}
-// }
-
-// //monoid{(val,idx),max}
-// impl Monoid for (usize,usize){
-// 	fn id()->Self{(usize::MIN,usize::MIN)}
-// 	fn f(&self,rhs:Self)->Self{max(*self,rhs)}
-// }
 
 pub trait MonoidLazy {
 	fn idq() -> Self;
