@@ -37,6 +37,19 @@ where
 	ret
 }
 
+pub fn permu_inv<T>(a: &Vec<T>) -> Vec<T>
+where
+	T: Copy,
+	usize: From<T>,
+	T: From<usize>,
+{
+	let mut b = vec![T::from(0); a.len()];
+	for i in 0..a.len() {
+		b[usize::from(a[i])] = T::from(i);
+	}
+	b
+}
+
 #[cfg(test)]
 mod tests {
 	use std::collections::VecDeque;

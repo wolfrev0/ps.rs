@@ -1,3 +1,5 @@
+use super::hld::HLD;
+
 pub struct Tree {
 	pub g: Vec<Vec<usize>>,
 }
@@ -17,12 +19,12 @@ impl Tree {
 		self.g[y].push(x);
 	}
 
-	pub fn centroid_tree(&self) -> TreeRooted {
+	pub fn centroid_tree(&self) -> HLD {
 		let mut dead = vec![false; self.len()];
 		let mut sizes = vec![0; self.len()];
 		self.recalc_sizes(0, 0, &dead, &mut sizes);
 		let cen = self.find_centroid(0, 0, &mut dead, sizes[0], &mut sizes);
-		TreeRooted::new(
+		HLD::new(
 			self.centroid_decompose(cen, &mut dead, &mut sizes, Tree::new(self.len())),
 			cen,
 		)
@@ -76,59 +78,4 @@ impl Tree {
 	}
 
 	//TODO: Tree Compress(https://www.facebook.com/codingcompetitions/hacker-cup/2023/round-2/problems/C)
-}
-
-pub struct TreeRooted {
-	pub root: usize,
-	pub p: Vec<usize>,
-	pub ch: Vec<Vec<usize>>,
-	pub sz: Vec<usize>,
-}
-impl TreeRooted {
-	pub fn len(&self) -> usize {
-		self.p.len()
-	}
-	pub fn new(tr: Tree, root: usize) -> TreeRooted {
-		fn init_dfs(mut s: TreeRooted, tr: &Tree, x: usize, px: usize) -> TreeRooted {
-			for y in tr.g[x].iter() {
-				if *y != px {
-					s = init_dfs(s, tr, *y, x);
-					s.p[*y] = x;
-					s.ch[x].push(*y);
-					s.sz[x] += s.sz[*y];
-				}
-			}
-			s.sz[x] += 1;
-			// make largest child subtree to be first element.
-			// It's useful When doing HLD.
-			for i in 1..s.ch[x].len() {
-				if s.sz[s.ch[x][0]] < s.sz[s.ch[x][i]] {
-					s.ch[x].swap(0, i)
-				}
-			}
-			s
-		}
-		init_dfs(
-			TreeRooted {
-				root: root,
-				p: vec![0; tr.len()],
-				ch: vec![Vec::new(); tr.len()],
-				sz: vec![0; tr.len()],
-			},
-			&tr,
-			root,
-			root,
-		)
-	}
-	pub fn pre_order(&self) -> Vec<usize> {
-		fn dfs(ch: &Vec<Vec<usize>>, x: usize, res: &mut Vec<usize>) {
-			res.push(x);
-			for y in ch[x].iter() {
-				dfs(ch, *y, res);
-			}
-		}
-		let mut ret = Vec::new();
-		dfs(&self.ch, self.root, &mut ret);
-		ret
-	}
 }
