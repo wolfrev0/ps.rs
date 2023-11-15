@@ -51,10 +51,16 @@ impl BulkIO {
 	pub fn popi(&mut self) -> i64 {
 		self.pop::<i64>()
 	}
-	pub fn pushspace(&mut self) -> &mut Self {
+	pub fn popuv(&mut self, n: usize) -> Vec<usize> {
+		Vec::from_iter(self.popn::<usize>(n))
+	}
+	pub fn popiv(&mut self, n: usize) -> Vec<i64> {
+		Vec::from_iter(self.popn::<i64>(n))
+	}
+	pub fn push_space(&mut self) -> &mut Self {
 		self.push(' ')
 	}
-	pub fn pushendl(&mut self) -> &mut Self {
+	pub fn push_endl(&mut self) -> &mut Self {
 		self.push('\n')
 	}
 }
