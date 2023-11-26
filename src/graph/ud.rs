@@ -39,4 +39,62 @@ impl AdjListUD {
 		}
 		return true;
 	}
+	//example: https://codeforces.com/contest/1900/submission/234490943
+	pub fn scc(&self) -> (Vec<Vec<usize>>, Vec<usize>) {
+		let n = self.len();
+		let mut scc = Vec::new();
+		let mut sccid = vec![n; n];
+		let mut ord = vec![n; n];
+		let mut ordmin = vec![n; n];
+		let mut ordid = 0;
+		let mut stk = Vec::new();
+		for i in 0..n {
+			if ord[i] == n {
+				self.dfs_tarjan(
+					i,
+					&mut scc,
+					&mut sccid,
+					&mut ord,
+					&mut ordmin,
+					&mut ordid,
+					&mut stk,
+				);
+			}
+		}
+		(scc, sccid)
+	}
+	fn dfs_tarjan(
+		&self,
+		x: usize,
+		mut scc: &mut Vec<Vec<usize>>,
+		mut sccid: &mut Vec<usize>,
+		mut ord: &mut Vec<usize>,
+		mut ordmin: &mut Vec<usize>,
+		mut ordid: &mut usize,
+		mut stk: &mut Vec<usize>,
+	) -> usize {
+		stk.push(x);
+		ord[x] = *ordid;
+		ordmin[x] = *ordid;
+		*ordid += 1;
+		for y in self.adj[x].iter() {
+			if ord[*y] == self.len() {
+				//tree-edge
+				ordmin[x] = ordmin[x].min(self.dfs_tarjan(*y, scc, sccid, ord, ordmin, ordid, stk));
+			} else if sccid[*y] == self.len() {
+				ordmin[x] = ordmin[x].min(ord[*y]);
+			}
+		}
+		if ordmin[x] == ord[x] {
+			scc.push(Vec::new());
+			while let Some(y) = stk.pop() {
+				scc.last_mut().unwrap().push(y);
+				sccid[y] = scc.len() - 1;
+				if y == x {
+					break;
+				}
+			}
+		}
+		ordmin[x]
+	}
 }
