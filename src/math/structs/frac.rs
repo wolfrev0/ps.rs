@@ -18,7 +18,7 @@ impl<T: Field> Ring for Frac<T> {}
 impl<T: Field> Field for Frac<T> {}
 impl<T: Field> Rem for Frac<T> {
 	type Output = Self;
-	fn rem(self, rhs: Self) -> Self {
+	fn rem(self, _: Self) -> Self {
 		Self::zero()
 	}
 }

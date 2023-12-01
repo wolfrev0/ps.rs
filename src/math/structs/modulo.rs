@@ -30,14 +30,14 @@ impl<const MOD: usize> Ring for Mod<MOD> {}
 impl<const MOD: usize> Field for Mod<MOD> {}
 impl<const MOD: usize> Rem for Mod<MOD> {
 	type Output = Self;
-	fn rem(self, rhs: Self) -> Self {
-		panic!("TODO")
+	fn rem(self, _: Self) -> Self {
+		todo!("TODO")
 	}
 }
 impl<const MOD: usize> Div for Mod<MOD> {
 	type Output = Self;
-	fn div(self, rhs: Self) -> Self {
-		panic!("TODO")
+	fn div(self, _: Self) -> Self {
+		todo!("TODO");
 	}
 }
 impl<const MOD: usize> Add for Mod<MOD> {

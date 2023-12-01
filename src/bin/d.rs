@@ -1,4 +1,6 @@
-fn solve(io: &mut psrs::io::BulkIO) {}
+fn solve(io: &mut psrs::io::BulkIO) {
+	let _ = io;
+}
 
 fn main() {
 	let mut io = psrs::io::BulkIO::new();

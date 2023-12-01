@@ -66,12 +66,12 @@ impl AdjListUD {
 	fn dfs_tarjan(
 		&self,
 		x: usize,
-		mut scc: &mut Vec<Vec<usize>>,
-		mut sccid: &mut Vec<usize>,
-		mut ord: &mut Vec<usize>,
-		mut ordmin: &mut Vec<usize>,
-		mut ordid: &mut usize,
-		mut stk: &mut Vec<usize>,
+		scc: &mut Vec<Vec<usize>>,
+		sccid: &mut Vec<usize>,
+		ord: &mut Vec<usize>,
+		ordmin: &mut Vec<usize>,
+		ordid: &mut usize,
+		stk: &mut Vec<usize>,
 	) -> usize {
 		stk.push(x);
 		ord[x] = *ordid;
