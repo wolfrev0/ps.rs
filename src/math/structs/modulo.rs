@@ -8,7 +8,7 @@ use super::{
 
 //NOTE: MOD should prime number to be Field
 //NOTE: MOD should be smaller than u32 to not overflow
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd)]
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Debug)]
 pub struct Mod<const MOD: usize> {
 	n: usize,
 }
@@ -92,5 +92,17 @@ impl<const MOD: usize> One for Mod<MOD> {
 impl<const MOD: usize> Mod<MOD> {
 	pub fn get(&self) -> usize {
 		self.n
+	}
+	pub fn pow(&self, p: usize) -> Self {
+		if p == 0 {
+			Self::from(1)
+		} else {
+			let tmp = self.pow(p / 2);
+			if p % 2 == 1 {
+				tmp * tmp * (*self)
+			} else {
+				tmp * tmp
+			}
+		}
 	}
 }

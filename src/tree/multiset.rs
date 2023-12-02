@@ -11,8 +11,8 @@ impl<T: Clone + Ord> Multiset<T> {
 			cnt: 0,
 		}
 	}
-	pub fn insert(&mut self, x: &T) {
-		match self.a.get_mut(x) {
+	pub fn insert(&mut self, x: T) {
+		match self.a.get_mut(&x) {
 			Some(y) => *y += 1,
 			None => {
 				self.a.insert(x.clone(), 1);

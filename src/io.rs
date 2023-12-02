@@ -51,6 +51,9 @@ impl BulkIO {
 	pub fn popi(&mut self) -> i64 {
 		self.pop::<i64>()
 	}
+	pub fn popc(&mut self) -> u8 {
+		self.popstr().bytes().next().unwrap()
+	}
 	pub fn popuv(&mut self, n: usize) -> Vec<usize> {
 		Vec::from_iter(self.popn::<usize>(n))
 	}
