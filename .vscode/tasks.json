@@ -8,19 +8,19 @@
 			"dependsOn": ["Create submit.rs"],
 		},
 		{
+			"label": "Run(Perf)",
+			"type": "shell",
+			"command": "ulimit -s 1048576 && CARGO_PROFILE_RELEASE_DEBUG=true cargo flamegraph -o fg_${fileBasenameNoExtension}.svg --bin ${fileBasenameNoExtension} < test/in",
+			"dependsOn": ["Create submit.rs"],
+		},
+		{
 			"label": "Run(Release)",
 			"type": "shell",
 			"command": "ulimit -s 1048576 && /usr/bin/time -v cargo run --bin ${fileBasenameNoExtension} --release <test/in 2> >(awk '/User/||/System/||/Elap/||/Max/')",
 			"dependsOn": ["Create submit.rs"],
 		},
 		{
-			"label": "RunAll(Debug)",
-			"type": "shell",
-			"command": "ulimit -s 1048576 && tool/tc.sh 'cargo run --bin ${fileBasenameNoExtension} -q'",
-			"dependsOn": ["Create submit.rs"],
-		},
-		{
-			"label": "RunAll(Release)",
+			"label": "RunTests",
 			"type": "shell",
 			"command": "ulimit -s 1048576 && tool/tc.sh 'cargo run --bin ${fileBasenameNoExtension} --release -q'",
 			"dependsOn": ["Create submit.rs"],
@@ -35,7 +35,7 @@
 			"label": "Create submit.rs",
 			"type": "shell",
 			//echo '/* ORIGINAL SOURCE CODE' > submit.rs && cat ${relativeFile} >> submit.rs && echo '*/' >> submit.rs && 
-			"command": "rm -f submit.rs && cargo equip --bin ${fileBasenameNoExtension} --minify libs --remove docs >> submit.rs",
+			"command": "rm -f submit.rs && cargo equip --bin ${fileBasenameNoExtension} --remove docs >> submit.rs",
 		},
 		{
 			"label": "tc_save",
