@@ -82,7 +82,7 @@ impl Tree {
 
 //return (root, tree)
 //https://en.wikipedia.org/wiki/Cartesian_tree
-fn build_cartesian(a: Vec<usize>) -> (usize, Tree) {
+pub fn build_cartesian(a: Vec<usize>) -> (usize, Tree) {
 	let n = a.len();
 	let mut l = vec![None; n];
 	let mut r = vec![None; n];
@@ -127,12 +127,10 @@ fn build_cartesian(a: Vec<usize>) -> (usize, Tree) {
 	(root, tr)
 }
 mod test {
-	use std::collections::BTreeSet;
-
-	use crate::tree::tree::build_cartesian;
-
 	#[test]
 	fn test() {
+		use crate::tree::tree::build_cartesian;
+		use std::collections::BTreeSet;
 		let (root, tr) = build_cartesian([9, 3, 7, 1, 8, 12, 10, 20, 15, 18, 5].to_vec());
 		assert!(root == 3);
 		assert!(BTreeSet::from_iter(tr.g[0].iter()) == BTreeSet::from_iter([1].iter()));
