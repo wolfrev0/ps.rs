@@ -1,6 +1,6 @@
-use std::ops::Mul;
+use std::ops::{Mul, Rem};
 
-use super::structs::field::Field;
+use super::structs::zero::Zero;
 
 pub fn sq<T>(x: T) -> T
 where
@@ -10,12 +10,12 @@ where
 }
 pub fn gcd<T>(x: T, y: T) -> T
 where
-	T: Field,
+	T: Zero + Rem<Output = T> + Clone + PartialEq,
 {
 	if x == T::zero() {
 		y
 	} else {
-		gcd(y % x, x)
+		gcd(y % x.clone(), x.clone())
 	}
 }
 pub fn gcd_fast<T>(x: T, y: T) -> T {

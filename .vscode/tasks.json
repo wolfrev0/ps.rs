@@ -35,7 +35,7 @@
 			"label": "Create submit.rs",
 			"type": "shell",
 			//echo '/* ORIGINAL SOURCE CODE' > submit.rs && cat ${relativeFile} >> submit.rs && echo '*/' >> submit.rs && 
-			"command": "rm -f submit.rs && cargo equip --bin ${fileBasenameNoExtension} --remove docs >> submit.rs",
+			"command": "rm -f submit.rs && cargo equip --bin ${fileBasenameNoExtension} --remove docs --minify libs >> submit.rs",
 		},
 		{
 			"label": "tc_save",

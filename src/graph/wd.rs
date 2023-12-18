@@ -17,6 +17,7 @@ impl<W: Copy + Add<Output = W> + Inf + Zero + Ord, I: Clone> WD<W, I> {
 		self.adj.len()
 	}
 	pub fn dijkstra(&self, src: Vec<usize>) -> Vec<W> {
+		//TODO: multi-source can be replaced by one mock node with 0 distance
 		let mut dist = vec![W::inf(); self.len()];
 		let mut pq = BinaryHeap::<(Reverse<W>, usize)>::new();
 		for i in src {
