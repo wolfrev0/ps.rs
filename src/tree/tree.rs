@@ -79,3 +79,66 @@ impl Tree {
 
 	//TODO: Tree Compress(https://www.facebook.com/codingcompetitions/hacker-cup/2023/round-2/problems/C)
 }
+
+//return (root, tree)
+//https://en.wikipedia.org/wiki/Cartesian_tree
+fn build_cartesian(a: Vec<usize>) -> (usize, Tree) {
+	let n = a.len();
+	let mut l = vec![None; n];
+	let mut r = vec![None; n];
+	let mut stk = Vec::new();
+	for i in 0..n {
+		while stk.len() > 0 && a[*stk.last().unwrap()] > a[i] {
+			stk.pop();
+		}
+		l[i] = stk.last().cloned();
+		stk.push(i);
+	}
+	stk.clear();
+	for i in (0..n).rev() {
+		while stk.len() > 0 && a[*stk.last().unwrap()] > a[i] {
+			stk.pop();
+		}
+		r[i] = stk.last().cloned();
+		stk.push(i);
+	}
+	let mut tr = Tree::new(n);
+	let mut root = 0;
+	for i in 0..n {
+		if i == root {
+			if let Some(j) = l[i] {
+				tr.add_edge(i, j);
+			}
+			if let Some(j) = r[i] {
+				tr.add_edge(i, j);
+			}
+		} else {
+			match (l[i], r[i]) {
+				(None, None) => {}
+				(None, Some(ri)) => tr.add_edge(i, ri),
+				(Some(li), None) => tr.add_edge(i, li),
+				(Some(li), Some(ri)) => tr.add_edge(i, if a[li] < a[ri] { ri } else { li }),
+			}
+		}
+		if a[root] > a[i] {
+			root = i;
+		}
+	}
+	(root, tr)
+}
+mod test {
+	use std::collections::BTreeSet;
+
+	use crate::tree::tree::build_cartesian;
+
+	#[test]
+	fn test() {
+		let (root, tr) = build_cartesian([9, 3, 7, 1, 8, 12, 10, 20, 15, 18, 5].to_vec());
+		assert!(root == 3);
+		assert!(BTreeSet::from_iter(tr.g[0].iter()) == BTreeSet::from_iter([1].iter()));
+		assert!(BTreeSet::from_iter(tr.g[1].iter()) == BTreeSet::from_iter([3, 2, 0].iter()));
+		assert!(BTreeSet::from_iter(tr.g[2].iter()) == BTreeSet::from_iter([1].iter()));
+		assert!(BTreeSet::from_iter(tr.g[3].iter()) == BTreeSet::from_iter([1, 10].iter()));
+		assert!(BTreeSet::from_iter(tr.g[4].iter()) == BTreeSet::from_iter([10, 6].iter()));
+	}
+}
