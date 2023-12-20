@@ -4,6 +4,8 @@ use crate::math::structs::{inf::Inf, zero::Zero};
 
 use super::{ud::UD, wd::WD};
 
+const COST_SCALING: bool = false;
+
 #[derive(Clone)]
 pub struct FlowInfo {
 	pub resi: usize, //residual index
@@ -79,25 +81,29 @@ impl UD<FlowInfo> {
 
 	pub fn dinic(&mut self, src: usize, snk: usize) -> usize {
 		let mut ret = 0;
-		loop {
-			let dist = self.dinic_bfs(snk);
-			let mut idx_base = vec![0; self.len()];
-			let mut flow = 0;
+		let mut lim = if COST_SCALING { 1 << 10 } else { 1 };
+		while lim > 0 {
 			loop {
-				let flow_cur = self.dinic_dfs(snk, &dist, src, &mut idx_base, usize::inf());
-				if flow_cur == 0 {
+				let dist = self.dinic_bfs(snk, lim);
+				let mut idx_base = vec![0; self.len()];
+				let mut flow = 0;
+				loop {
+					let flow_cur = self.dinic_dfs(snk, &dist, src, &mut idx_base, usize::inf());
+					if flow_cur == 0 {
+						break;
+					}
+					flow += flow_cur;
+				}
+				if flow == 0 {
 					break;
 				}
-				flow += flow_cur;
+				ret += flow;
 			}
-			if flow == 0 {
-				break;
-			}
-			ret += flow;
+			lim >>= 1;
 		}
 		ret
 	}
-	fn dinic_bfs(&self, snk: usize) -> Vec<usize> {
+	fn dinic_bfs(&self, snk: usize, lim: usize) -> Vec<usize> {
 		//Unlike common implementation, this use backward-BFS. (global relabeling heuristic)
 		//https://www.researchgate.net/profile/Yefim-Dinitz/publication/221349815_Dinitz%27_Algorithm_The_Original_Version_and_Even%27s_Version/links/0deec51b756259346f000000/Dinitz-Algorithm-The-Original-Version-and-Evens-Version.pdf page 14
 		let mut q = VecDeque::new();
@@ -108,7 +114,7 @@ impl UD<FlowInfo> {
 		while q.len() > 0 {
 			let x = q.pop_front().unwrap();
 			for (y, FlowInfo { resi: xi, cap: _ }) in self.adj[x].iter() {
-				if dist_src[*y] > dist_src[x] + 1 && self.adj[*y][*xi].1.cap > 0 {
+				if dist_src[*y] > dist_src[x] + 1 && self.adj[*y][*xi].1.cap >= lim {
 					dist_src[*y] = dist_src[x] + 1;
 					q.push_back(*y);
 				}
