@@ -1,4 +1,4 @@
-use std::{cmp::Reverse, collections::VecDeque, mem::swap};
+use std::{collections::VecDeque, mem::swap};
 
 use crate::math::structs::{inf::Inf, zero::Zero};
 
