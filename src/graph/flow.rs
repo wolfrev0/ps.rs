@@ -199,10 +199,7 @@ impl WD<i64, FlowInfo> {
 			for _epoch in 0..n {
 				for i in p.iter() {
 					for (ji, (j, w, FlowInfo { cap, resi: _ })) in self.adj[*i].iter().enumerate() {
-						if *cap > 0
-							&& (d[*j].0, Reverse(d[*j].1))
-								> (d[*i].0 + *w, Reverse(d[*i].1.min(*cap)))
-						{
+						if *cap > 0 && d[*j].0 > d[*i].0 + *w {
 							d[*j] = (d[*i].0 + *w, d[*i].1.min(*cap), *i, ji);
 							q.push(*j);
 						}
