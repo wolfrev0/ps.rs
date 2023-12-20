@@ -5,6 +5,7 @@ use crate::math::structs::{inf::Inf, zero::Zero};
 use super::{ud::UD, wd::WD};
 
 const COST_SCALING: bool = false;
+const COST_SCALING_BOUND: usize = 1 << 10;
 
 #[derive(Clone)]
 pub struct FlowInfo {
@@ -81,7 +82,7 @@ impl UD<FlowInfo> {
 
 	pub fn dinic(&mut self, src: usize, snk: usize) -> usize {
 		let mut ret = 0;
-		let mut lim = if COST_SCALING { 1 << 10 } else { 1 };
+		let mut lim = if COST_SCALING { COST_SCALING_BOUND } else { 1 };
 		while lim > 0 {
 			loop {
 				let dist = self.dinic_bfs(snk, lim);
