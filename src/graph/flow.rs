@@ -1,18 +1,15 @@
-use std::{collections::VecDeque, ops::Add};
+use std::{cmp::Reverse, collections::VecDeque, mem::swap};
 
 use crate::math::structs::{inf::Inf, zero::Zero};
 
-use super::wd::WD;
+use super::{ud::UD, wd::WD};
 
 #[derive(Clone)]
 pub struct FlowInfo {
 	pub resi: usize, //residual index
 	pub cap: usize,  //capacity
 }
-pub struct Flow {
-	pub adj: Vec<Vec<(usize, FlowInfo)>>,
-}
-impl Flow {
+impl UD<FlowInfo> {
 	pub fn new(n: usize) -> Self {
 		Self {
 			adj: vec![Vec::new(); n],
@@ -168,8 +165,8 @@ impl Flow {
 	}
 }
 
-impl<W: Copy + Add<Output = W> + Inf + Zero + Ord> WD<W, FlowInfo> {
-	pub fn add_edge(&mut self, from: usize, to: usize, cost: W, cap: usize) {
+impl WD<i64, FlowInfo> {
+	pub fn add_edge(&mut self, from: usize, to: usize, cost: i64, cap: usize) {
 		let resi_from = self.adj[to].len();
 		let resi_to = self.adj[from].len();
 		self.adj[from].push((
@@ -182,14 +179,61 @@ impl<W: Copy + Add<Output = W> + Inf + Zero + Ord> WD<W, FlowInfo> {
 		));
 		self.adj[to].push((
 			from,
-			cost,
+			-cost,
 			FlowInfo {
 				resi: resi_to,
 				cap: 0,
 			},
 		))
 	}
-	// pub fn min_cost_flow(&mut self, src: usize, snk: usize) -> usize {
-	// 	panic!("TODO");
-	// }
+	pub fn min_cost_flow(&mut self, src: usize, snk: usize, must_maxflow: bool) -> (i64, usize) {
+		let (mut flow, mut cost) = (0, 0);
+		let n = self.len();
+		loop {
+			//SPFA
+			let mut d = vec![(i64::inf(), 0, 0, 0); n]; //dist, flow, from, to_idx
+			let mut p = Vec::new();
+			let mut q = Vec::new();
+			d[src] = (0, usize::MAX, 0, 0);
+			p.push(src);
+			for _epoch in 0..n {
+				for i in p.iter() {
+					for (ji, (j, w, FlowInfo { cap, resi: _ })) in self.adj[*i].iter().enumerate() {
+						if *cap > 0
+							&& (d[*j].0, Reverse(d[*j].1))
+								> (d[*i].0 + *w, Reverse(d[*i].1.min(*cap)))
+						{
+							d[*j] = (d[*i].0 + *w, d[*i].1.min(*cap), *i, ji);
+							q.push(*j);
+						}
+					}
+				}
+				swap(&mut p, &mut q);
+				q.clear();
+			}
+			assert!(p.is_empty()); //if not, negative cycle exist
+
+			let flow_cur = d[snk].1;
+			if flow_cur.is_zero() {
+				break;
+			}
+			let mut cost_cur = 0;
+			let mut y = snk;
+			while y != src {
+				let x = d[y].2;
+				let yi = d[y].3;
+				let xi = self.adj[x][yi].2.resi;
+				self.adj[x][yi].2.cap -= flow_cur;
+				self.adj[y][xi].2.cap += flow_cur;
+				cost_cur += flow_cur as i64 * self.adj[x][yi].1;
+				y = x;
+			}
+			if !must_maxflow && cost_cur < 0 {
+				break;
+			}
+			flow += flow_cur;
+			cost += cost_cur;
+		}
+		(cost, flow)
+	}
 }

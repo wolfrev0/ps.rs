@@ -1,9 +1,9 @@
 use crate::tree::uf::UF;
 
-pub struct AdjListUD {
-	pub adj: Vec<Vec<usize>>,
+pub struct UD<I: Clone> {
+	pub adj: Vec<Vec<(usize, I)>>,
 }
-impl AdjListUD {
+impl UD<()> {
 	pub fn new(n: usize) -> Self {
 		Self {
 			adj: vec![Vec::new(); n],
@@ -13,12 +13,12 @@ impl AdjListUD {
 		self.adj.len()
 	}
 	pub fn add_edge(&mut self, from: usize, to: usize) {
-		self.adj[from].push(to);
+		self.adj[from].push((to, ()));
 	}
 	pub fn reverse(&self) -> Self {
 		let mut ret = Self::new(self.len());
 		for x in 0..self.len() {
-			for y in self.adj[x].iter() {
+			for (y, _) in self.adj[x].iter() {
 				ret.add_edge(*y, x);
 			}
 		}
@@ -27,7 +27,7 @@ impl AdjListUD {
 	pub fn is_bipartite(&self) -> bool {
 		let mut uf = UF::new(self.len() * 2);
 		for x in 0..self.len() {
-			for y in self.adj[x].iter() {
+			for (y, _) in self.adj[x].iter() {
 				uf.union(x, y + self.len());
 				uf.union(x + self.len(), *y);
 			}
@@ -77,7 +77,7 @@ impl AdjListUD {
 		ord[x] = *ordid;
 		ordmin[x] = *ordid;
 		*ordid += 1;
-		for y in self.adj[x].iter() {
+		for (y, _) in self.adj[x].iter() {
 			if ord[*y] == self.len() {
 				//tree-edge
 				ordmin[x] = ordmin[x].min(self.dfs_tarjan(*y, scc, sccid, ord, ordmin, ordid, stk));

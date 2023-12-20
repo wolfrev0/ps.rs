@@ -1,4 +1,4 @@
-use std::{cmp::Reverse, collections::BinaryHeap, ops::Add};
+use std::{cmp::Reverse, collections::BinaryHeap, mem::swap, ops::Add};
 
 use crate::math::structs::{inf::Inf, zero::Zero};
 
@@ -37,6 +37,52 @@ impl<W: Copy + Add<Output = W> + Inf + Zero + Ord, I: Clone> WD<W, I> {
 			}
 		}
 		dist
+	}
+	//return empty vector when negative cycle detected
+	pub fn bellman_ford(&self, src: usize) -> Vec<W> {
+		let n = self.len();
+		let mut d = vec![W::inf(); n];
+		d[src] = W::zero();
+		for _epoch in 0..=n {
+			let mut fin = true;
+			for i in 0..n {
+				for (j, w, _) in self.adj[i].iter() {
+					if d[*j] > d[i] + *w {
+						d[*j] = d[i] + *w;
+						fin = false;
+					}
+				}
+			}
+			if fin {
+				return d;
+			}
+		}
+		vec![]
+	}
+	//return empty vector when negative cycle detected
+	pub fn spfa(&self, src: usize) -> Vec<W> {
+		let n = self.len();
+		let mut d = vec![W::inf(); n];
+		let mut p = Vec::new();
+		let mut q = Vec::new();
+		d[src] = W::zero();
+		p.push(src);
+		for _epoch in 0..n {
+			for i in p.iter() {
+				for (j, w, _) in self.adj[*i].iter() {
+					if d[*j] > d[*i] + *w {
+						d[*j] = d[*i] + *w;
+						q.push(*j);
+					}
+				}
+			}
+			swap(&mut p, &mut q);
+			q.clear();
+			if p.is_empty() {
+				return d;
+			}
+		}
+		vec![]
 	}
 }
 
