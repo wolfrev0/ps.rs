@@ -43,7 +43,8 @@ impl UD<FlowInfo> {
 	pub fn ford_fulkerson(&mut self, src: usize, snk: usize) -> usize {
 		let mut ret = 0;
 		loop {
-			let flow = self.ford_fulkerson_dfs(snk, src, usize::MAX, &mut vec![false; self.len()]);
+			let flow =
+				self.ford_fulkerson_dfs(snk, src, usize::inf(), &mut vec![false; self.len()]);
 			if flow == 0 {
 				break;
 			}
@@ -79,11 +80,11 @@ impl UD<FlowInfo> {
 	pub fn dinic(&mut self, src: usize, snk: usize) -> usize {
 		let mut ret = 0;
 		loop {
-			let dist = self.dinic_bfs(src);
+			let dist = self.dinic_bfs(snk);
 			let mut idx_base = vec![0; self.len()];
 			let mut flow = 0;
 			loop {
-				let flow_cur = self.dinic_dfs(snk, &dist, src, &mut idx_base, usize::MAX);
+				let flow_cur = self.dinic_dfs(snk, &dist, src, &mut idx_base, usize::inf());
 				if flow_cur == 0 {
 					break;
 				}
@@ -96,23 +97,26 @@ impl UD<FlowInfo> {
 		}
 		ret
 	}
-	fn dinic_bfs(&self, src: usize) -> Vec<usize> {
-		let mut dist = vec![usize::MAX / 2; self.len()];
+	fn dinic_bfs(&self, snk: usize) -> Vec<usize> {
+		//Unlike common implementation, this use backward-BFS. (global relabeling heuristic)
+		//https://www.researchgate.net/profile/Yefim-Dinitz/publication/221349815_Dinitz%27_Algorithm_The_Original_Version_and_Even%27s_Version/links/0deec51b756259346f000000/Dinitz-Algorithm-The-Original-Version-and-Evens-Version.pdf page 14
 		let mut q = VecDeque::new();
-		dist[src] = 0;
-		q.push_back(src);
+
+		let mut dist_src = vec![usize::inf(); self.len()];
+		dist_src[snk] = 0;
+		q.push_back(snk);
 		while q.len() > 0 {
 			let x = q.pop_front().unwrap();
-			for (y, FlowInfo { resi: _, cap }) in self.adj[x].iter() {
-				if *cap > 0 && dist[*y] > dist[x] + 1 {
-					dist[*y] = dist[x] + 1;
+			for (y, FlowInfo { resi: xi, cap: _ }) in self.adj[x].iter() {
+				if dist_src[*y] > dist_src[x] + 1 && self.adj[*y][*xi].1.cap > 0 {
+					dist_src[*y] = dist_src[x] + 1;
 					q.push_back(*y);
 				}
 			}
 		}
-		dist
+
+		dist_src
 	}
-	//snk에서 역방향으로 src에 도달가능한 간선만 사용하면 더 빨라질수도 있다고 함
 	fn dinic_dfs(
 		&mut self,
 		snk: usize,
@@ -126,7 +130,7 @@ impl UD<FlowInfo> {
 		} else {
 			while idx_base[x] < self.adj[x].len() {
 				let (y, FlowInfo { resi, cap }) = self.adj[x][idx_base[x]];
-				if dist[y] == dist[x] + 1 && cap > 0 {
+				if dist[y] + 1 == dist[x] && cap > 0 {
 					let flow_cur = self.dinic_dfs(snk, dist, y, idx_base, flow.min(cap));
 					if flow_cur > 0 {
 						self.adj[x][idx_base[x]].1.cap -= flow_cur;
@@ -194,7 +198,7 @@ impl WD<i64, FlowInfo> {
 			let mut d = vec![(i64::inf(), 0, 0, 0); n]; //dist, flow, from, to_idx
 			let mut p = Vec::new();
 			let mut q = Vec::new();
-			d[src] = (0, usize::MAX, 0, 0);
+			d[src] = (0, usize::inf(), 0, 0);
 			p.push(src);
 			for _epoch in 0..n {
 				for i in p.iter() {
