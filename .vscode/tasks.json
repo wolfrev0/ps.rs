@@ -4,38 +4,27 @@
 		{
 			"label": "Run(Debug)",
 			"type": "shell",
-			"command": "ulimit -s 32768 && cargo run --bin ${fileBasenameNoExtension} < test/in",
-			"dependsOn": ["Create submit.rs"],
-		},
-		{
-			"label": "Run(Perf)",
-			"type": "shell",
-			"command": "ulimit -s 32768 && CARGO_PROFILE_RELEASE_DEBUG=true cargo flamegraph -o fg_${fileBasenameNoExtension}.svg --bin ${fileBasenameNoExtension} < test/in",
-			"dependsOn": ["Create submit.rs"],
+			"command": "cargo run --bin ${fileBasenameNoExtension} < test/in && tool/bundle.sh ${fileBasenameNoExtension}",
 		},
 		{
 			"label": "Run(Release)",
 			"type": "shell",
-			"command": "ulimit -s 32768 && /usr/bin/time -v cargo run --bin ${fileBasenameNoExtension} --release <test/in 2> >(awk '/User/||/System/||/Elap/||/Max/')",
-			"dependsOn": ["Create submit.rs"],
+			"command": "tool/exec.sh ${fileBasenameNoExtension} && tool/bundle.sh ${fileBasenameNoExtension}",
 		},
 		{
 			"label": "RunTests",
 			"type": "shell",
-			"command": "ulimit -s 32768 && tool/tc.sh 'cargo run --bin ${fileBasenameNoExtension} --release -q'",
-			"dependsOn": ["Create submit.rs"],
+			"command": "tool/tc.sh ${fileBasenameNoExtension} && tool/bundle.sh ${fileBasenameNoExtension}",
 		},
+		// {
+		// 	"label": "Run(Perf)",
+		// 	"type": "shell",
+		// 	"command": "ulimit -s 32768 && CARGO_PROFILE_RELEASE_DEBUG=true cargo flamegraph -o fg_${fileBasenameNoExtension}.svg --bin ${fileBasenameNoExtension} < test/in",
+		// },
 		{
 			"label": "Build(Debug)",
 			"type": "shell",
-			"command": "cargo build --bin ${fileBasenameNoExtension}",
-			"dependsOn": ["Create submit.rs"],
-		},
-		{
-			"label": "Create submit.rs",
-			"type": "shell",
-			//echo '/* ORIGINAL SOURCE CODE' > submit.rs && cat ${relativeFile} >> submit.rs && echo '*/' >> submit.rs && 
-			"command": "rm -f submit.rs && cargo equip --bin ${fileBasenameNoExtension} --remove docs --minify libs >> submit.rs",
+			"command": "cargo build --bin ${fileBasenameNoExtension} && tool/bundle.sh ${fileBasenameNoExtension}",
 		},
 		{
 			"label": "tc_save",

@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+ulimit -s 32768
+
 RED='\033[1;31m'
 CYAN='\033[1;36m'
 GREEN='\033[1;32m'
@@ -14,26 +17,21 @@ for i in $input_pattern;
 do
 	answer_pattern=${i%.*}.ans
 	echo "Running "${i%.*}" ("$(( ($succ+$fail)*100/$test_cnt ))"%)"
-	if /usr/bin/time -v diff <($1<$i) $answer_pattern -u -BZ 2> >(awk '/Elap|Max/') 1> >(tail -n +4); then
+	temp_output=$(mktemp)
+	temp_stderr=$(mktemp)
+	tool/exec.sh $1 -q < $i > $temp_output 2> $temp_stderr
+	echo $(cat $temp_stderr)
+	echo $(cat $temp_output)
+	echo $(cat $answer_pattern)
+	if diff $temp_output $answer_pattern -u -B; then
 		succ=$((succ+1))
 	else
 		fail=$(($fail+1))
 		fail_list+=$i", ";
 	fi
 done
-
-input_pattern=test/in
-for i in $input_pattern;
-do
-	answer_pattern=test/ans
-	echo "Running "${i%.*}" ("$(( ($succ+$fail)*100/$test_cnt ))"%)"
-	if /usr/bin/time -v diff <($1<$i) $answer_pattern -u -BZ 2> >(awk '/Elap|Max/') 1> >(tail -n +4); then
-		succ=$((succ+1))
-	else
-		fail=$(($fail+1))
-		fail_list+=$i", ";
-	fi
-done
+# input_pattern=test/in
+# answer_pattern=test/ans
 
 echo -e "${GREEN}Ok: $succ tests${NONE}"
 if (( $fail )); then
