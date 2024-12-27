@@ -13,4 +13,7 @@
     "editor.defaultFormatter": "rust-lang.rust-analyzer",
     "editor.formatOnSave": true
   },
+	"terminal.integrated.env.osx": {
+  	"PATH": "...:/opt/homebrew/opt/node@22/bin:/opt/homebrew/bin:..."
+	}
 }
