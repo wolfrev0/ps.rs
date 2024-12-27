@@ -1,3 +1,5 @@
+#![allow(static_mut_refs)]
+
 pub mod geom;
 pub mod graph;
 pub mod io;

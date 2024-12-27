@@ -1,6 +1,3 @@
-//static memory가 최선인 이유: Self reference를 가질 수 없다. 메모리를 옮겨다닐때 invalidate된다고 함.
-//https://users.rust-lang.org/t/having-a-struct-where-one-member-refers-to-another/51380/5
-//https://doc.rust-lang.org/std/pin/ 이거쓰면 될수도?
 static mut BUF: String = String::new();
 
 pub struct BulkIO {
