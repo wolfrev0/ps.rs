@@ -3,7 +3,4 @@ node_modules
 test/tc
 package-lock.json
 submit.rs
-test/*.in
-test/*.ans
-test/in
-test/ans
+test
