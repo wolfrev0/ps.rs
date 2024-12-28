@@ -1,9 +1,10 @@
 #![allow(static_mut_refs)]
-
-pub mod geom;
-pub mod graph;
 pub mod io;
-pub mod math;
-pub mod misc;
-pub mod str;
-pub mod tree;
+pub mod util;
+
+// optional modules
+// pub mod geom;
+// pub mod graph;
+// pub mod math;
+// pub mod str;
+// pub mod tree;
