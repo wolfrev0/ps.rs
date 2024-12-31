@@ -5,12 +5,23 @@ fn main() {
 	let t: usize = 1; //io.pop();
 	for _i in 1..=t {
 		// io.push("Case #").push(_i).push(": ");
-		unsafe {
-			solve(&mut io);
-		}
+		Solver::new(&mut io).solve();
 	}
 }
 
-unsafe fn solve(io: &mut psrs::io::BulkIO) {
-	let _ = io;
+#[derive(Default)]
+struct Solver {
+	n: usize,
+}
+impl Solver {
+	pub fn new(io: &mut psrs::io::BulkIO) -> Self {
+		let n = io.pop();
+		Self {
+			n,
+			..Default::default()
+		}
+	}
+	pub fn solve(&mut self) {
+		println!("{}", self.n);
+	}
 }
