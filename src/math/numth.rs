@@ -24,3 +24,19 @@ pub fn gcd_fast<T>(x: T, y: T) -> T {
 	let _ = x;
 	y
 }
+
+pub fn prime_factors(mut n: usize) -> Vec<usize> {
+	let mut res = Vec::new();
+	let mut f = 2;
+	while f * f <= n {
+		while n % f == 0 {
+			n /= f;
+			res.push(f);
+		}
+		f += 1;
+	}
+	if n > 1 {
+		res.push(n);
+	}
+	res
+}
