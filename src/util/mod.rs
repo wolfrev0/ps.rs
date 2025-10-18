@@ -1,5 +1,3 @@
-// pub mod hash;
-
 use std::{collections::BTreeMap, ops::AddAssign};
 
 pub static DIR4: [(i32, i32); 4] = [(0, 1), (1, 0), (0, -1), (-1, 0)];
