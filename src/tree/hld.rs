@@ -1,4 +1,4 @@
-use crate::misc::helper::permu_inv;
+use crate::util::permu_inv;
 
 use super::tree::Tree;
 
