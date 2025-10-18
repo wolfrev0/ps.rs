@@ -2,12 +2,7 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "Run(Debug)",
-			"type": "shell",
-			"command": "RUST_BACKTRACE=1 cargo run --bin ${fileBasenameNoExtension} < test/in && tool/bundle.sh ${fileBasenameNoExtension}",
-		},
-		{
-			"label": "Run(Release)",
+			"label": "Run active file",
 			"type": "shell",
 			"command": "tool/exec.sh ${fileBasenameNoExtension} && tool/bundle.sh ${fileBasenameNoExtension}",
 		},
@@ -16,13 +11,8 @@
 			"type": "shell",
 			"command": "tool/tc.sh ${fileBasenameNoExtension} && tool/bundle.sh ${fileBasenameNoExtension}",
 		},
-		// {
-		// 	"label": "Run(Perf)",
-		// 	"type": "shell",
-		// 	"command": "ulimit -s 32768 && CARGO_PROFILE_RELEASE_DEBUG=true cargo flamegraph -o fg_${fileBasenameNoExtension}.svg --bin ${fileBasenameNoExtension} < test/in",
-		// },
 		{
-			"label": "Build(Debug)",
+			"label": "Build",
 			"type": "shell",
 			"command": "cargo build --bin ${fileBasenameNoExtension} && tool/bundle.sh ${fileBasenameNoExtension}",
 		},
@@ -33,6 +23,11 @@
 			"runOptions": {
 				"runOn": "folderOpen"
 			}
-		}
+		},
+		// {
+		// 	"label": "Run(Perf)",
+		// 	"type": "shell",
+		// 	"command": "ulimit -s 32768 && CARGO_PROFILE_RELEASE_DEBUG=true cargo flamegraph -o fg_${fileBasenameNoExtension}.svg --bin ${fileBasenameNoExtension} < test/in",
+		// },
 	],
 }
