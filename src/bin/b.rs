@@ -1,27 +1,19 @@
-#![allow(non_upper_case_globals, static_mut_refs)]
+#![allow(static_mut_refs)]
 
 fn main() {
 	let mut io = psrs::io::BulkIO::new();
-	let t: usize = 1; //io.pop();
-	for _i in 1..=t {
-		// io.push("Case #").push(_i).push(": ");
-		Solver::new(&mut io).solve();
+	let t: usize = io.pop();
+	for i in 1..=t {
+		io.push("Case #").push(i).push(": ");
+		Solver::default().solve(&mut io);
 	}
 }
 
 #[derive(Default)]
-struct Solver {
-	n: usize,
-}
+struct Solver {}
 impl Solver {
-	pub fn new(io: &mut psrs::io::BulkIO) -> Self {
-		let n = io.pop();
-		Self {
-			n,
-			..Default::default()
-		}
-	}
-	pub fn solve(&mut self) {
-		println!("{}", self.n);
+	pub fn solve(&mut self, io: &mut psrs::io::BulkIO) {
+		let n: usize = io.pop();
+		io.push(n).push_endl();
 	}
 }
