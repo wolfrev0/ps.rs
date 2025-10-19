@@ -6,10 +6,13 @@ pub struct BulkIO {
 }
 impl BulkIO {
 	pub fn new() -> BulkIO {
-		io::stdin().read_to_string(unsafe { &mut BUF }).unwrap();
-		BulkIO {
-			it: unsafe { BUF.split_ascii_whitespace() },
-			strout: String::new(),
+		unsafe {
+			assert!(BUF.is_empty());
+			io::stdin().read_to_string(&mut BUF).unwrap();
+			BulkIO {
+				it: BUF.split_ascii_whitespace(),
+				strout: String::new(),
+			}
 		}
 	}
 	pub fn pop<T>(&mut self) -> T
@@ -69,12 +72,15 @@ pub struct InteractIO {
 }
 impl InteractIO {
 	pub fn new() -> InteractIO {
-		let mut stdin = io::stdin().lock();
-		stdin.read_line(unsafe { &mut BUF }).unwrap();
-		InteractIO {
-			it: unsafe { BUF.split_ascii_whitespace() },
-			stdin: stdin,
-			stdout: io::stdout().lock(),
+		unsafe {
+			assert!(BUF.is_empty());
+			let mut stdin = io::stdin().lock();
+			stdin.read_line(&mut BUF).unwrap();
+			InteractIO {
+				it: BUF.split_ascii_whitespace(),
+				stdin: stdin,
+				stdout: io::stdout().lock(),
+			}
 		}
 	}
 	pub fn pop<T>(&mut self) -> T
